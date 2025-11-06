@@ -1,0 +1,25 @@
+.addFriend-window-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(var(--main-body), 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px);
+}
+
+.addFriend-window {
+  background: var(--secondary-body);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  height: 400px;
+  text-align: center;
+  color: var(--text-heading);
+  border-radius: 25px;
+}

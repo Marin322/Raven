@@ -6,5 +6,8 @@ export const API_CONFIG = {
     },
     CHATS: {
         GETUSERCHATS: '/api/chats',
+    },
+    USERS: {
+        GETALLUSERS: '/api/users/list/search/user'
     }
 };

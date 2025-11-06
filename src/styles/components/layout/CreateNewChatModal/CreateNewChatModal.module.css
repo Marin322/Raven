@@ -2,7 +2,7 @@
     position: fixed; 
     top: 0;
     left: 0;
-    z-index: 999; 
+    z-index: 100; 
     width: 100vw;
     height: 100vh;
     background-color: rgba(var(--main-body), 1); 
@@ -13,10 +13,32 @@
   }
   
   .add-newchat-window {
-    background: white;
+    background: var(--secondary-body);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 300px; 
+    width: 400px;
+    height: 400px; 
     text-align: center;
+    color: var(--text-heading);
+    border-radius: 25px;
+  }
+
+  .add-newchat-window h3 {
+    margin-bottom: 25px;
+    font-size: 20px;
+  }
+
+  .newchat-input-name {
+    background-color: var(--settings-body);
+    width: 100%;
+    height: 30px;
+    padding-left: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .newchat-buttons {
+    display: grid;
+    gap: 10px;
   }

@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import SearchField from "../../components/common/SearchField/SearchField";
 import ChatUi from "../../components/ui/Chat/ChatUi";
 import CreateNewChatModal from "../../components/layout/CreateNewChatModal/CreateNewChatModal";
+import ThemeToggle from "../../components/common/ThemeToggle/ThemeToggle";
+import AboutChat from "./AboutChat";
+import logo from "../../logo.svg";
+import { AnimatePresence } from "framer-motion";
+import AddFriendModal from "../../components/layout/AddFrinedModal/AddFriendModal";
+import SettingsWindow from "../../components/layout/SettingsWindow/SettingsWindow";
 
 const MainPage = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -13,10 +19,16 @@ const MainPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [addNewChat, setAddNewChat] = useState(false);
+  const [addButton, setAddButton] = useState(false);
+  const [addFrined, setAddFrined] = useState(false);
 
   const handleOpenSettingsWindow = () => {
     setIsSettingsOpen(true);
   };
+
+  const handleCloseSettingsWindow = () => {
+    setIsSettingsOpen(false);
+  }
 
   const handleChatClock = (chatId) => {
     setSelectedChat(chatId);
@@ -24,6 +36,14 @@ const MainPage = () => {
 
   const handleAddNewChat = (prev) => {
     setAddNewChat((prev) => !prev);
+  };
+
+  const handleAddNewFrined = (prev) => {
+    setAddFrined((prev) => !prev);
+  };
+
+  const handleAddButtonClick = (prev) => {
+    setAddButton((prev) => !prev);
   };
 
   const loadChats = async (append = false) => {
@@ -80,10 +100,15 @@ const MainPage = () => {
   // ];
   return (
     <div className={styles["mainPage-container"]}>
-      {addNewChat && <CreateNewChatModal onClick={handleAddNewChat} />}
+      <AnimatePresence>
+        {addNewChat && <CreateNewChatModal onClick={handleAddNewChat} />}
+        {addFrined && <AddFriendModal onClick={handleAddNewFrined}/>}
+        {isSettingsOpen && <SettingsWindow onClick={handleCloseSettingsWindow}/>}
+      </AnimatePresence>
       <div className={styles["chatsList-container"]}>
         <div className={styles["logo-menu"]}>
           <p>
+            <ThemeToggle />
             <b>Raven Chat</b>
           </p>
           <div className={styles["logo-menu-burger"]}>
@@ -97,32 +122,43 @@ const MainPage = () => {
           <SearchField />
         </div>
         <div className={styles["chatsUi-container"]}>
-          <div className={styles["chats-container"]}>
-            {loading && <div className={styles.loader}></div>}
-            {chats.length === 0 && !loading ? (
-              <div className={styles["no-chats-placeholder"]}>
-                <p>У вас нет чатов. Создайте новый!</p>
-              </div>
-            ) : (
-              chats.map((chat) => (
-                <ChatUi
-                  key={chat.id}
-                  img={chat.img}
-                  name={chat.name}
-                  time={chat.time}
-                  msgText={chat.msgText}
-                  isSelected={selectedChat === chat.id}
-                  onClick={() => handleChatClock(chat.id)}
-                />
-              ))
-            )}
-          </div>
-          <div className={styles["add-newchat"]} onClick={handleAddNewChat}>
+          {!addButton ? (
+            <div className={styles["chats-container"]}>
+              {loading && <div className={styles.loader}></div>}
+              {chats.length === 0 && !loading ? (
+                <div className={styles["no-chats-placeholder"]}>
+                  <p>У вас нет чатов. Создайте новый!</p>
+                </div>
+              ) : (
+                chats.map((chat) => (
+                  <ChatUi
+                    key={chat.id}
+                    img={chat.img}
+                    name={chat.name}
+                    time={chat.time}
+                    msgText={chat.msgText}
+                    isSelected={selectedChat === chat.id}
+                    onClick={() => handleChatClock(chat.id)}
+                  />
+                ))
+              )}
+            </div>
+          ) : (
+            <div className={styles["chats-container"]}>
+              <button className={styles["chatsAddButtons"]} onClick={handleAddNewChat}>Создать групповой чат</button>
+              <button className={styles["chatsAddButtons"]} onClick={handleAddNewFrined}>Добавить друга</button>
+            </div>
+          )}
+          <div className={styles["add-newchat"]} onClick={handleAddButtonClick}>
             <button className={styles["add-newchat-btn"]}>+</button>{" "}
           </div>
         </div>
       </div>
-      <div></div> {/* Здесь будет второй блок */}
+      <div className={styles["chat-container"]}>
+        <div className={styles["aboutchat-container"]}>
+          <AboutChat avatar={logo} name="Kacher Twink" isOnline={true} />
+        </div>
+      </div>
     </div>
   );
 };
