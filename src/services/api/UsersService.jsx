@@ -5,11 +5,11 @@ class UsersService {
     try {
       const { page = 1, pageSize = 25, searchTerm = '' } = userData || {};
       const token = localStorage.getItem("token");
-      console.log(token)
       if (!token) {
         throw new Error("Токен не найден.");
       }
-      const url = `${API_CONFIG.BASE_URL}${API_CONFIG.USERS.GETALLUSERS}?page=1&pageSize=${pageSize}&SearchTerm=${encodeURIComponent(searchTerm)}`;
+      const url = `${API_CONFIG.BASE_URL}${API_CONFIG.USERS.GETALLUSERS}?page=${page}&pageSize=${pageSize}&SearchTerm=${encodeURIComponent(searchTerm)}`;
+      console.log(url)
       const response = await fetch(url
         ,
         {

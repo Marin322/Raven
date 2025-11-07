@@ -1,44 +1,64 @@
 .add-newchat-window-container {
-    position: fixed; 
-    top: 0;
-    left: 0;
-    z-index: 100; 
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(var(--main-body), 1); 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(3px); 
-  }
-  
-  .add-newchat-window {
-    background: var(--secondary-body);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 400px;
-    height: 400px; 
-    text-align: center;
-    color: var(--text-heading);
-    border-radius: 25px;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(var(--main-body), 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px);
+}
 
-  .add-newchat-window h3 {
-    margin-bottom: 25px;
-    font-size: 20px;
-  }
+.add-newchat-window {
+  background: var(--secondary-body);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  height: 400px;
+  text-align: center;
+  color: var(--text-heading);
+  border-radius: 25px;
+}
 
-  .newchat-input-name {
-    background-color: var(--settings-body);
-    width: 100%;
-    height: 30px;
-    padding-left: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-  }
+.newchat-main-content {
+  height: 70%;
+}
 
-  .newchat-buttons {
-    display: grid;
-    gap: 10px;
-  }
+.add-newchat-window h3 {
+  margin-bottom: 25px;
+  font-size: 20px;
+}
+
+.newchat-chooseUsers-title {
+  font-size: 20px;
+  color: var(--text-heading);
+  margin-bottom: 10px;
+}
+
+.newchat-input-name {
+  background-color: var(--settings-body);
+  width: 100%;
+  height: 30px;
+  padding-left: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.newchat-buttons {
+  display: grid;
+  gap: 10px;
+  height: 30%;
+}
+
+.newchat-buttons button {
+  background-color: var(--button-color2);
+  border-radius: 25px;
+}
+
+.newchat-main-content input {
+  height: 45px;
+}

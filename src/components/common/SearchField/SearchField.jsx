@@ -10,12 +10,8 @@ const SearchField = ({ value, onChange, placeholder = "Поиск..."}) => {
           value={value}
           placeholder={placeholder}
           className={styles["search-input"]}
+          onChange={onChange}
         />
-        {value && (
-          <button onClick={() => onChange("")} className={styles["clear-button"]}>
-            ✕
-          </button>
-        )}
       </div>
     </div>
   );

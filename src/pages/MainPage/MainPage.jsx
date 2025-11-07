@@ -13,7 +13,7 @@ import SettingsWindow from "../../components/layout/SettingsWindow/SettingsWindo
 
 const MainPage = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(0);
+  const [selectedChat, setSelectedChat] = useState(null);
   const [chats, setChats] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -21,6 +21,9 @@ const MainPage = () => {
   const [addNewChat, setAddNewChat] = useState(false);
   const [addButton, setAddButton] = useState(false);
   const [addFrined, setAddFrined] = useState(false);
+  const [search, setSearch] = useState("");
+  const [pageNum, setPageNumb] = useState(1);
+  const [filteredChats, setFilteredChats] = useState([]);
 
   const handleOpenSettingsWindow = () => {
     setIsSettingsOpen(true);
@@ -28,10 +31,16 @@ const MainPage = () => {
 
   const handleCloseSettingsWindow = () => {
     setIsSettingsOpen(false);
-  }
+  };
 
-  const handleChatClock = (chatId) => {
-    setSelectedChat(chatId);
+  const handleChatClock = (chat) => {
+    setSelectedChat(chat);
+
+    // try {
+    //   const { authService } = await import("../../services/api/AuthService");
+    //   authService.Logout();
+    // }
+    // catch{}
   };
 
   const handleAddNewChat = (prev) => {
@@ -66,44 +75,71 @@ const MainPage = () => {
     }
   };
 
+  const loadUsers = async () => {
+    const { usersService } = await import("../../services/api/UsersService");
+
+    try {
+      const UsersList = await usersService.GetAllUsers({
+        page: pageNum,
+        pageSize: 25,
+        searchTerm: search,
+      });
+      setFilteredChats(UsersList.users || []);
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    loadChats();
-  }, []);
+    if (filteredChats.length === 0 && search.trim() !== "") {
+      loadUsers(search);
+    } else {
+      setChats([]);
+    }
+  }, [filteredChats, search]);
+
+  // useEffect(() => {
+  //   loadChats();
+  // }, []);
 
   const loadMore = () => {
     setPage((prev) => prev + 1);
     loadChats(true);
   };
 
-  // const chats = [
-  //   {
-  //     id: 0,
-  //     img: logo,
-  //     name: "Kacher Twink",
-  //     time: "19:49",
-  //     msgText: "Окей, вчера полная помойка",
-  //   },
-  //   {
-  //     id: 1,
-  //     img: logo,
-  //     name: "James Wilson",
-  //     time: "19:03",
-  //     msgText: "Тб мне нужно файл E..",
-  //   },
-  //   {
-  //     id: 2,
-  //     img: logo,
-  //     name: "Joseph Stalin",
-  //     time: "18:42",
-  //     msgText: "Мой танк уже в тёплой пол окно...",
-  //   },
-  // ];
+  const searchChats = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const chats2 = [
+    {
+      id: 1,
+      img: logo,
+      name: "Kacher Twink",
+      time: "19:49",
+      msgText: "Окей, вчера полная помойка",
+    },
+    {
+      id: 2,
+      img: logo,
+      name: "James Wilson",
+      time: "19:03",
+      msgText: "Тб мне нужно файл E..",
+    },
+    {
+      id: 3,
+      img: logo,
+      name: "Joseph Stalin",
+      time: "18:42",
+      msgText: "Мой танк уже в тёплой пол окно...",
+    },
+  ];
   return (
     <div className={styles["mainPage-container"]}>
       <AnimatePresence>
         {addNewChat && <CreateNewChatModal onClick={handleAddNewChat} />}
-        {addFrined && <AddFriendModal onClick={handleAddNewFrined}/>}
-        {isSettingsOpen && <SettingsWindow onClick={handleCloseSettingsWindow}/>}
+        {addFrined && <AddFriendModal onClick={handleAddNewFrined} />}
+        {isSettingsOpen && (
+          <SettingsWindow onClick={handleCloseSettingsWindow} />
+        )}
       </AnimatePresence>
       <div className={styles["chatsList-container"]}>
         <div className={styles["logo-menu"]}>
@@ -119,34 +155,48 @@ const MainPage = () => {
           </div>
         </div>
         <div className={styles["searchField-container"]}>
-          <SearchField />
+          <SearchField onChange={searchChats} />
         </div>
         <div className={styles["chatsUi-container"]}>
           {!addButton ? (
             <div className={styles["chats-container"]}>
               {loading && <div className={styles.loader}></div>}
-              {chats.length === 0 && !loading ? (
+              {chats2.length === 0 && !loading ? (
                 <div className={styles["no-chats-placeholder"]}>
                   <p>У вас нет чатов. Создайте новый!</p>
                 </div>
               ) : (
-                chats.map((chat) => (
-                  <ChatUi
-                    key={chat.id}
-                    img={chat.img}
-                    name={chat.name}
-                    time={chat.time}
-                    msgText={chat.msgText}
-                    isSelected={selectedChat === chat.id}
-                    onClick={() => handleChatClock(chat.id)}
-                  />
-                ))
+                chats2
+                  .filter((chat) =>
+                    chat.name.toLowerCase().includes(search.toLowerCase())
+                  )
+                  .map((chat) => (
+                    <ChatUi
+                      key={chat.id}
+                      img={chat.img}
+                      name={chat.name}
+                      time={chat.time}
+                      msgText={chat.msgText}
+                      isSelected={selectedChat === chat.id}
+                      onClick={() => handleChatClock(chat)}
+                    />
+                  ))
               )}
             </div>
           ) : (
             <div className={styles["chats-container"]}>
-              <button className={styles["chatsAddButtons"]} onClick={handleAddNewChat}>Создать групповой чат</button>
-              <button className={styles["chatsAddButtons"]} onClick={handleAddNewFrined}>Добавить друга</button>
+              <button
+                className={styles["chatsAddButtons"]}
+                onClick={handleAddNewChat}
+              >
+                Создать групповой чат
+              </button>
+              <button
+                className={styles["chatsAddButtons"]}
+                onClick={handleAddNewFrined}
+              >
+                Добавить друга
+              </button>
             </div>
           )}
           <div className={styles["add-newchat"]} onClick={handleAddButtonClick}>
@@ -156,7 +206,9 @@ const MainPage = () => {
       </div>
       <div className={styles["chat-container"]}>
         <div className={styles["aboutchat-container"]}>
-          <AboutChat avatar={logo} name="Kacher Twink" isOnline={true} />
+          {selectedChat &&(
+            <AboutChat avatar={selectedChat.img} name={selectedChat.name} isOnline={true} />
+          )}
         </div>
       </div>
     </div>

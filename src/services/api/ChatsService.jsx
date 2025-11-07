@@ -10,12 +10,6 @@ class ChatsService {
         throw new Error("Токен не найден. Пожалуйста, авторизуйтесь заново.");
       }
 
-      console.log("Запрос чатов:", {
-        page,
-        pageSize,
-        token: token.substring(0, 20) + "...",
-      });
-
       const response = await fetch(
         `${API_CONFIG.BASE_URL}${API_CONFIG.CHATS.GETUSERCHATS}?page=${page}&pageSize=${pageSize}`,
         {
