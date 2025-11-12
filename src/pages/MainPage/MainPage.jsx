@@ -12,18 +12,18 @@ import AddFriendModal from "../../components/layout/AddFrinedModal/AddFriendModa
 import SettingsWindow from "../../components/layout/SettingsWindow/SettingsWindow";
 
 const MainPage = () => {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [chats, setChats] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [addNewChat, setAddNewChat] = useState(false);
-  const [addButton, setAddButton] = useState(false);
-  const [addFrined, setAddFrined] = useState(false);
-  const [search, setSearch] = useState("");
-  const [pageNum, setPageNumb] = useState(1);
-  const [filteredChats, setFilteredChats] = useState([]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // состояние открытия настроек
+  const [selectedChat, setSelectedChat] = useState(null); // состояния для компонента чата (для подсветки активного)
+  const [chats, setChats] = useState([]); // массив чатов
+  const [page, setPage] = useState(1); // страницы для пагинации
+  const [hasMore, setHasMore] = useState(true); // я не знаю чё это
+  const [loading, setLoading] = useState(false); // состояние для загрузки
+  const [addNewChat, setAddNewChat] = useState(false); // состояние для открытия модального окна для создаия группового чата
+  const [addButton, setAddButton] = useState(false); // состояние для откртыия панели с созданием чата и добавления в друзья
+  const [addFrined, setAddFrined] = useState(false); // состояние для открытия модального окна для добавления в друзья
+  const [search, setSearch] = useState(""); // состояние для поиска чатов
+  const [pageNum, setPageNumb] = useState(1); // состояние для страниц на пагинацию
+  const [filteredChats, setFilteredChats] = useState([]); // массив отфильтрованных чатов
 
   const handleOpenSettingsWindow = () => {
     setIsSettingsOpen(true);
@@ -33,7 +33,7 @@ const MainPage = () => {
     setIsSettingsOpen(false);
   };
 
-  const handleChatClock = async (chat) => {
+  const handleChatClick = async (chat) => {
     // setSelectedChat(chat);
 
     try {
@@ -58,9 +58,9 @@ const MainPage = () => {
   const loadChats = async (append = false) => {
     const { chatsService } = await import("../../services/api/ChatsService");
     try {
-      setLoading(true);
-      const userData = { page, pageSize: 10 };
-      const newChats = await chatsService.GetUserChats(userData);
+      setLoading(true); // устанавливаем загрузку
+      const userData = { page, pageSize: 10 }; // переменная для пагинации
+      const newChats = await chatsService.GetUserChats(userData); // запрос к серверу для получения данных о чатах
 
       if (append) {
         setChats((prev) => [...prev, ...newChats]);
@@ -178,7 +178,7 @@ const MainPage = () => {
                       time={chat.time}
                       msgText={chat.msgText}
                       isSelected={selectedChat === chat.id}
-                      onClick={() => handleChatClock(chat)}
+                      onClick={() => handleChatClick(chat)}
                     />
                   ))
               )}

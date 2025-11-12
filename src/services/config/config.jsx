@@ -10,5 +10,8 @@ export const API_CONFIG = {
     },
     USERS: {
         GETALLUSERS: '/api/users/list/search/user'
+    },
+    PROFILE: {
+        GETPROFILE: '/api/users/' // userid
     }
 };

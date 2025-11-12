@@ -78,6 +78,8 @@ class AuthService {
     localStorage.removeItem('userid');
     localStorage.removeItem('usersettings');
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshtoken');
+    localStorage.removeItem('userProfile');
   }
 }
 
