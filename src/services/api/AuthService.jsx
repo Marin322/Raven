@@ -15,6 +15,7 @@ class AuthService {
         }
       );
       if (!response.ok) throw new Error(`${response.status}`);
+      console.log(response.status)
       return await response.json();
     } catch (error) {
       console.log(error);
@@ -78,6 +79,8 @@ class AuthService {
     localStorage.removeItem('userid');
     localStorage.removeItem('usersettings');
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshtoken');
+    localStorage.removeItem('userProfile');
   }
 }
 

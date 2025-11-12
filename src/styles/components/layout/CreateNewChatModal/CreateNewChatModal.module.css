@@ -13,12 +13,12 @@
 }
 
 .add-newchat-window {
-  background: var(--secondary-body);
-  padding: 20px;
+  background: var(--main-body);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 400px;
-  height: 450px;
+  width: 500px;
+  height: 550px;
+  position: relative;
   text-align: center;
   color: var(--text-heading);
   border-radius: 25px;
@@ -88,4 +88,80 @@
   overflow-y: auto;
   width: 360px;
   background-color: var(--dropdown-list);
+}
+
+.add-newchat-window-header {
+  width: 100%;
+  height: 50px;
+  border-bottom: 2px solid var(--component-border);
+  border-radius: 25px 25px 0px 0px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  padding: 0px 20px 0px 20px;
+  color: var(--text-heading);
+  font-size: 18px;
+}
+
+.add-newchat-window-header p {
+  width: 80%;
+  text-align: center;
+}
+
+.add-newchat-window-header svg path {
+  cursor: pointer;
+  fill: var(--text-heading);
+}
+
+.add-newchat-window-main {
+  padding: 20px;
+  width: 100%;
+  height: 82.5%;
+  border-radius: 0px 0px 25px 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  color: var(--text-hint);
+  font-size: 20px;
+}
+
+.add-newchat-window-main p {
+  margin-top: 10px;
+}
+
+.add-newchat-window-privacy-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.add-newchat-window-privacy-text {
+  width: 100%;
+  height: 50%;
+  text-align: left;
+  gap: 0;
+}
+
+.add-newchat-window-privacy-text-head {
+  color: var(--text-heading);
+  font-size: 18px;
+}
+
+.add-newchat-window-privacy-text-hint {
+  color: var(--text-hint);
+  font-size: 14px;
+}
+
+@media (max-width: 499px) {
+  .add-newchat-window {
+    width: 300px;
+    height: 450px;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 1000px) and (max-height: 873px) {
+  .add-newchat-window {
+    width: 430px;
+    height: 500px;
+  }
 }
