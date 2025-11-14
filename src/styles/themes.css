@@ -16,7 +16,7 @@
   --component-border: #1c1c1c;
   --add-newchat-button: #444d68;
   --dropdown-list: #1e1e1e;
-
+  --drop-shadow-windows: rgba(255, 255, 255, 0.334);
 }
 
 [data-theme="light"] {
@@ -37,6 +37,7 @@
   --component-border: #e0e0e0;
   --add-newchat-button: #444d68;
     --dropdown-list: #e9e6e6;
+  --drop-shadow-windows: rgba(0, 0, 0, 0.2);
 }
 
 * {

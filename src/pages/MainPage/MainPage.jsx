@@ -10,6 +10,7 @@ import logo from "../../logo.svg";
 import { AnimatePresence } from "framer-motion";
 import AddFriendModal from "../../components/layout/AddFrinedModal/AddFriendModal";
 import SettingsWindow from "../../components/layout/SettingsWindow/SettingsWindow";
+import CreateLocalChatModal from "../../components/layout/AddNewLocalChatModal/AddNewLocalChatModal";
 
 const MainPage = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false); // состояние открытия настроек
@@ -24,6 +25,7 @@ const MainPage = () => {
   const [search, setSearch] = useState(""); // состояние для поиска чатов
   const [pageNum, setPageNumb] = useState(1); // состояние для страниц на пагинацию
   const [filteredChats, setFilteredChats] = useState([]); // массив отфильтрованных чатов
+  const [localChatIsOpen, setLocalChatIsOpen] = useState(false);
 
   const handleOpenSettingsWindow = () => {
     setIsSettingsOpen(true);
@@ -109,6 +111,10 @@ const MainPage = () => {
     setSearch(e.target.value);
   };
 
+  const openCreateLocalChatModal = (prev) => {
+    setLocalChatIsOpen(prev => !prev);
+  };
+
   const chats2 = [
     {
       id: 1,
@@ -140,6 +146,7 @@ const MainPage = () => {
         {isSettingsOpen && (
           <SettingsWindow onClick={handleCloseSettingsWindow} />
         )}
+        {localChatIsOpen && <CreateLocalChatModal onClick={openCreateLocalChatModal}/>}
       </AnimatePresence>
       <div className={styles["chatsList-container"]}>
         <div className={styles["logo-menu"]}>
@@ -161,12 +168,13 @@ const MainPage = () => {
           {!addButton ? (
             <div className={styles["chats-container"]}>
               {loading && <div className={styles.loader}></div>}
-              {chats2.length === 0 && !loading ? (
+              {chats.length === 0 && !loading ? (
                 <div className={styles["no-chats-placeholder"]}>
                   <p>У вас нет чатов. Создайте новый!</p>
+                  <button onClick={openCreateLocalChatModal}>Создать новый чат</button>
                 </div>
               ) : (
-                chats2
+                chats
                   .filter((chat) =>
                     chat.name.toLowerCase().includes(search.toLowerCase())
                   )

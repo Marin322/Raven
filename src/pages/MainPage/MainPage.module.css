@@ -68,6 +68,19 @@
 .no-chats-placeholder {
   color: var(--text-heading);
   margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-chats-placeholder button {
+  width: 50%;
+  height: 40px;
+  border-radius: 15px;
+  background-color: var(--button-color2);
+  color: white;
+  margin-top: 25px;
 }
 
 .chats-wrapper {

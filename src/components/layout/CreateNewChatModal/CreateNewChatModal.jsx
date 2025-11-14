@@ -8,16 +8,26 @@ const CreateNewChatModal = ({ onClick }) => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [name, setName] = useState("");
+  const [desc, setDesc] = useState("");
   const [pageNum, setPageNum] = useState(1);
-  const [infoIsOpen, setInfoIsOpen] = useState(false);
   const [isCreate, setIsCreate] = useState(false);
+  const [isPrivacy, setIsPrivacy] = useState(true);
+  const [userName, setUserName] = useState("");
 
   const handleChangeName = (e) => {
     setName(e.target.value);
   };
 
-  const handleOpenInfo = (prev) => {
-    setInfoIsOpen((prev) => !prev);
+  const handleChangeDesc = (e) => {
+    setDesc(e.target.value);
+  };
+
+  const handleChangePrivacy = () => {
+    setIsPrivacy((prev) => !prev);
+  };
+
+  const handleChangeUserName = (e) => {
+    setUserName(e.target.value);
   };
 
   const GetUsers = async () => {
@@ -27,10 +37,22 @@ const CreateNewChatModal = ({ onClick }) => {
       const UsersList = await usersService.GetAllUsers({
         page: pageNum,
         pageSize: 25,
-        searchTerm: name,
+        searchTerm: userName,
       });
-      setUsers(UsersList.users || []);
-    } catch (error) {}
+      const newUsers = UsersList.users || [];
+
+      setUsers((prevUsers) => {
+        const existingIds = new Set(prevUsers.map((user) => user.id)); // Предполагаем, что у пользователя есть уникальный 'id'
+        const filteredNewUsers = newUsers.filter(
+          (user) => !existingIds.has(user.id)
+        );
+        return [...prevUsers, ...filteredNewUsers]; // Добавляем только новых
+      });
+
+      setUserName(""); // Очищаем поле ввода после добавления
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
 
   const ChangeCreateWindow = (prev) => {
@@ -66,9 +88,9 @@ const CreateNewChatModal = ({ onClick }) => {
             </div>
             <div className={styles["add-newchat-window-main"]}>
               <p>Название</p>
-              <InputField />
+              <InputField onChange={handleChangeName} />
               <p>Описание</p>
-              <InputField />
+              <InputField onChange={handleChangeDesc} />
               <div className={styles["add-newchat-window-privacy-container"]}>
                 <div className={styles["add-newchat-window-privacy-text"]}>
                   <p className={styles["add-newchat-window-privacy-text-head"]}>
@@ -79,7 +101,7 @@ const CreateNewChatModal = ({ onClick }) => {
                   </p>
                 </div>
                 <div>
-                  <TogglePrivacy />
+                  <TogglePrivacy onClick={handleChangePrivacy} />
                 </div>
               </div>
               <div
@@ -118,7 +140,9 @@ const CreateNewChatModal = ({ onClick }) => {
                 Вы почти создали новую группу, осталось пригласить будущих
                 участников
               </p>
-              <div className={styles["add-newchat-window-next-main-inputfield"]}>
+              <div
+                className={styles["add-newchat-window-next-main-inputfield"]}
+              >
                 <svg
                   width="30"
                   height="30"
@@ -133,7 +157,30 @@ const CreateNewChatModal = ({ onClick }) => {
                     fill="#7B818A"
                   />
                 </svg>
-                <input placeholder="Введите @username..."/>
+                <input
+                  placeholder="Введите @username..."
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      GetUsers();
+                    }
+                  }}
+                  onChange={handleChangeUserName}
+                />
+              </div>
+              <div
+                className={
+                  styles["add-newchat-window-next-addedusers-container"]
+                }
+              >
+                {users.map((user) => (
+                  <div
+                    className={styles["add-newchat-window-next-addedusers"]}
+                    key={user.id} >
+                      <img alt="" src={user.avatarUrl}/>
+                      <p>{user.username}</p>
+                    </div>
+                ))}
               </div>
             </div>
           </div>
@@ -144,40 +191,3 @@ const CreateNewChatModal = ({ onClick }) => {
 };
 
 export default CreateNewChatModal;
-
-{
-  /* <div className={styles["newchat-main-content"]}>
-          <h3>Создать новый чат</h3>
-          <input
-            className={styles["newchat-input-name"]}
-            type="text"
-            placeholder="Имя чата"
-          />
-          <p className={styles["newchat-chooseUsers-title"]}>
-            Выберите пользователей
-          </p>
-          <input
-            className={styles["newchat-input-name"]}
-            type="text"
-            placeholder="Имя пользователя"
-            onChange={handleChangeName}
-          />
-          <div
-            className={styles["newchat-allusers"]}
-            onClick={handleOpenInfo}
-          ></div>
-          {infoIsOpen && (
-            <div className={styles["newchat-allusers-info"]}>
-              {users.map((user) => (
-                <div key={user.id}>
-                  <p>{user.firstName}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className={styles["newchat-buttons"]}>
-          <button onClick={GetUsers}>Добавить в чат</button>
-          <button onClick={onClick}>Закрыть</button>
-        </div> */
-}
