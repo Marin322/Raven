@@ -75,6 +75,10 @@ class ChatsService {
       throw error;
     }
   }
+
+  async CreateGroupChat() {
+    
+  }
 }
 
 export const chatsService = new ChatsService();
