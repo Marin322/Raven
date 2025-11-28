@@ -42,8 +42,13 @@ const CreateLocalChatModal = ({ onClick, onSelectUser }) => {
     setSelectedUser((prev) => (prev?.id === user.id ? null : user));
   };
 
-  const handleGoToChat = () => {
+  const handleGoToChat = async () => {
     if (selectedUser) {
+      const { chatsService } = await import("../../../services/api/ChatsService");
+      try {
+        chatsService.CreatePersonalChat(selectedUser.id);
+      }
+      catch{};
       const chatData = {
         id: `${selectedUser.id}`,
         name: `${selectedUser.firstName} ${selectedUser.lastName || ""}`.trim(),

@@ -59,15 +59,14 @@ const MainPage = () => {
 
   // Обработчик отправки сообщения
   const handleSendMessage = async () => {
-    const messageService = (await import("../../services/api/MessagesService")).default;
+    const { messageService } = await import("../../services/api/MessagesService");
     if (!inputMessage.trim() || !selectedChat) return;
 
     try {
         // Используем сервис
         const result = await messageService.sendMessage(
             inputMessage,
-            selectedChat.id, // targetUserId
-            selectedChat.id, // chatId
+            selectedChat.id, // targetUserId // chatId
             null // file (можно добавить позже)
         );
         
@@ -96,12 +95,12 @@ const MainPage = () => {
   };
 
   const handleChatClick = async (chat) => {
-    // setSelectedChat(chat);
+    setSelectedChat(chat);
 
-    try {
-      const { authService } = await import("../../services/api/AuthService");
-      authService.Logout();
-    } catch {}
+    // try {
+    //   const { authService } = await import("../../services/api/AuthService");
+    //   authService.Logout();
+    // } catch {}
   };
 
   const handleAddNewChat = (prev) => {

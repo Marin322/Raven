@@ -79,6 +79,25 @@ class ChatsService {
   async CreateGroupChat() {
     
   }
+
+  async CreatePersonalChat(targetUserId) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.CHATS.CREATEPERSONALCHAT}${targetUserId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Accept": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(targetUserId),
+    });
+    const result = await response.json();
+
+    if (!response.ok) throw new Error(response.status);
+
+    console.log("Чат создан");
+  };
 }
 
 export const chatsService = new ChatsService();
