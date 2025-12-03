@@ -8,7 +8,7 @@ const ChatUi = ({ img, name, time, msgText, isSelected, onClick }) => {
       onClick={onClick}
     >
       <div className={styles["avatar-container"]}>
-        <img src={img} alt={name} />
+        <img src={img} alt=""/>
       </div>
       <div className={styles["main-container"]}>
         <div className={styles["msg-container"]}>

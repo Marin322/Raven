@@ -45,6 +45,7 @@ class AuthService {
       localStorage.setItem("userid", result.userId);
       localStorage.setItem("usersettings", JSON.stringify(result.settings));
       localStorage.setItem("refreshtoken", result.refreshToken);
+      localStorage.setItem("deviceid", result.deviceId)
 
       return result;
     } catch (error) {
@@ -80,6 +81,7 @@ class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshtoken');
     localStorage.removeItem('userProfile');
+    localStorage.removeItem('deviceId');
   }
 }
 

@@ -1,0 +1,240 @@
+/* components/ui/Message/Message.module.css */
+.messageContainer {
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.dateSeparator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.dateSeparator::before,
+.dateSeparator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.dateSeparator span {
+  background-color: var(--background-color);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  margin: 0 10px;
+}
+
+.message {
+  display: flex;
+  max-width: 70%;
+  margin: 2px 0;
+  position: relative;
+}
+
+.own {
+  margin-left: auto;
+  flex-direction: row-reverse;
+}
+
+.other {
+  margin-right: auto;
+}
+
+.senderInfo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  margin-left: 8px;
+}
+
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  object-fit: cover;
+}
+
+.senderName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.contentWrapper {
+  position: relative;
+  max-width: 100%;
+}
+
+.messageCorner {
+  position: absolute;
+  top: 0;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.corner {
+  width: 12px;
+  height: 12px;
+  background: var(--message-other-bg);
+  border-radius: 0 4px 0 0;
+  transform: rotate(45deg) translate(-6px, -6px);
+}
+
+.own .messageCorner {
+  display: none;
+}
+
+.other:not(:first-of-type) .messageCorner {
+  display: none;
+}
+
+.messageContent {
+  padding: 8px 12px;
+  border-radius: 12px;
+  position: relative;
+  word-wrap: break-word;
+  word-break: break-word;
+  min-width: 60px;
+}
+
+.other .messageContent {
+  background-color: var(--message-other-bg);
+  border-bottom-left-radius: 4px;
+  color: var(--text-primary);
+}
+
+.own .messageContent {
+  background-color: var(--message-own-bg);
+  border-bottom-right-radius: 4px;
+  color: var(--text-primary);
+}
+
+.other:first-of-type .messageContent {
+  border-top-left-radius: 4px;
+}
+
+.own:first-of-type .messageContent {
+  border-top-right-radius: 4px;
+}
+
+.text {
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.fileAttachment {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  margin-top: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.own .fileAttachment {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.fileIcon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.fileName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.fileName:hover {
+  text-decoration: underline;
+}
+
+.fileSize {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.deletedMessage {
+  display: flex;
+  align-items: center;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.deletedIcon {
+  margin-right: 8px;
+  opacity: 0.6;
+}
+
+.messageFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 4px;
+  padding: 0 2px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.time {
+  opacity: 0.7;
+}
+
+.statusIcons {
+  display: flex;
+  align-items: center;
+  margin-left: 6px;
+}
+
+.editedIcon,
+.readIcon,
+.deliveredIcon,
+.sentIcon {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+.readIcon {
+  color: #4CAF50;
+}
+
+.deliveredIcon {
+  color: #2196F3;
+}
+
+/* Анимации для новых сообщений */
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message {
+  animation: messageAppear 0.2s ease-out;
+}
