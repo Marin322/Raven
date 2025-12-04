@@ -47,10 +47,13 @@ class AuthService {
       localStorage.setItem("refreshtoken", result.refreshToken);
       localStorage.setItem("deviceid", result.deviceId)
 
-      return result;
+      return {
+        status: response.status,
+        ok: response.ok
+      }
     } catch (error) {
       throw error;
-    } // проблема с данными в user
+    } 
   }
 
   async Logout() {

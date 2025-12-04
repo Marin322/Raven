@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
 function App() {
-  const [isLogin, setIsLogin] = useState(null);
+  const [isAuth, setIsAuth] = useState(null);
   useEffect(() => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark').matches;
     const savedTheme = localStorage.getItem('theme');
@@ -16,29 +16,29 @@ function App() {
 
   useEffect(() => {
     const userId = localStorage.getItem('userid');
-    setIsLogin(!userId); // true если нет userId, false если есть
+    setIsAuth(!!userId); // true если нет userId, false если есть
   }, []); // ← Пустой массив = выполнить один раз
 //gkufgtuifj
   return (
     <BrowserRouter>
       <Routes>
-        {/* Редирект с /auth на / если пользователь авторизован */}
+        {/* /auth должен быть доступен только НЕавторизованным */}
         <Route
           path="/auth"
           element={
-            isLogin ?
-              <AuthPage /> :
+            !isAuth ? // Изменено: !isAuth вместо isAuth
+              <AuthPage isAuth={isAuth} setIsAuth={setIsAuth} /> :
               <Navigate to="/" replace />
           }
         />
 
-        {/* Редирект с / на /auth если пользователь НЕ авторизован */}
+        {/* / должен быть доступен только авторизованным */}
         <Route
           path="/"
           element={
-            isLogin ?
-              <Navigate to="/auth" replace /> :
-              <MainPage />
+            isAuth ? // Изменено: isAuth вместо !isAuth
+              <MainPage /> :
+              <Navigate to="/auth" replace />
           }
         />
       </Routes>

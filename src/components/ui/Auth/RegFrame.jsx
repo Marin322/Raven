@@ -1,11 +1,13 @@
 import InputField from "../../common/InputField/InputField";
 import RegButton from "../../common/RegButton/RegButton";
 import { useState } from "react";
+import styles from "../../../styles/components/ui/Auth/RegFrame.module.css";
 const RegFrame = () => {
   const [regEmail, setRegEmail] = useState("");
   const [regLastName, setRegLastName] = useState("");
   const [regFirstName, setRegFirstName] = useState("");
   const [regPassword, setRegPassword] = useState("");
+  const [invalidPasswordTitle, setInvalidPasswordTitle] = useState("");
 
   const changeRegEmail = (event) => {
     setRegEmail(event.target.value);
@@ -24,6 +26,10 @@ const RegFrame = () => {
   };
 
   const CreateAccount = async () => {
+    if (regPassword.length < 6) {
+      setInvalidPasswordTitle("Меньше 6 символов");
+      return;
+    };
     const { authService } = await import("../../../services/api/AuthService");
     try {
       const newUser = await authService.Registration({
@@ -38,7 +44,7 @@ const RegFrame = () => {
     }
   };
   return (
-    <div>
+    <div className={styles["regframe-container"]}>
       <InputField
         key="register-email"
         header="Эл. Почта"
@@ -67,6 +73,9 @@ const RegFrame = () => {
         type="text"
         onChange={changeRegPassword}
       ></InputField>
+      {invalidPasswordTitle === "Меньше 6 символов" && (
+        <p className="text-red-600 text-lg">Пароль должен содержать не меньше 6 символов</p>
+      )}
       <div className="authorregbutton">
         <RegButton color="blue" size="medium" onClick={CreateAccount}>
           Зарегистрироваться

@@ -3,7 +3,7 @@ import styles from "./AuthPage.module.css";
 import logo from "../../logo.svg";
 import AuthFrame from "../../components/ui/Auth/AuthFrame";
 import RegFrame from "../../components/ui/Auth/RegFrame";
-const AuthPage = () => {
+const AuthPage = ({ isAuth, setIsAuth }) => {
   const [isLogin, setIsLogin] = useState(true);
   return (
     <div className={styles.page}>
@@ -34,9 +34,9 @@ const AuthPage = () => {
           </span>
         </div>
         {isLogin ? (
-          <AuthFrame/>
+          <AuthFrame isAuth={isAuth} setIsAuth={setIsAuth} />
         ) : (
-          <RegFrame/>
+          <RegFrame />
         )}
       </div>
     </div>

@@ -152,8 +152,7 @@ const MainPage = () => {
   };
 
   const handleSelectLocalUser = (chatData) => {
-    setSelectedChat(chatData); // Открываем чат справа
-    setLocalChatIsOpen(false);
+    setSelectedChat(null); // Открываем чат справа
   };
 
   useEffect(() => {
@@ -181,6 +180,13 @@ const MainPage = () => {
     setLocalChatIsOpen((prev) => !prev);
   };
 
+  const handleCloseChat = (e) => {
+    if (e.key === "Esc" && !e.shiftKey) {
+      e.preventDefault();
+      setSelectedChat(null);
+    }
+  };
+
   const chats2 = [
     {
       id: 1,
@@ -205,7 +211,7 @@ const MainPage = () => {
     },
   ];
   return (
-    <div className={styles["mainPage-container"]}>
+    <div className={styles["mainPage-container"]} onKeyPress={handleCloseChat}>
       <AnimatePresence>
         {addNewChat && <CreateNewChatModal onClick={handleAddNewChat} />}
         {addFrined && <AddFriendModal onClick={handleAddNewFrined} />}

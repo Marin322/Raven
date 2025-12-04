@@ -1,9 +1,10 @@
 import InputField from "../../common/InputField/InputField";
 import { useState } from "react";
 import RegButton from "../../common/RegButton/RegButton";
-const AuthFrame = () => {
+const AuthFrame = ({ isAuth, setIsAuth }) => {
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
+  const [isCorrectAuth, setIsCorrectAuth] = useState();
   const changeAuthEmail = (event) => {
     setAuthEmail(event.target.value);
   };
@@ -19,6 +20,13 @@ const AuthFrame = () => {
         email: authEmail,
         password: authPassword,
       });
+
+      if (enterUser.status === 200) {
+        setIsCorrectAuth(true);
+        setIsAuth(true);
+      } else {
+        setIsCorrectAuth(false);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -41,6 +49,9 @@ const AuthFrame = () => {
         onChange={changeAuthPassword}
       ></InputField>
       <div className="authorregbutton">
+        {isCorrectAuth && (
+          <p className="text-green-400 text-lg">Авторизация успешна!</p>
+        )}
         <RegButton color="blue" size="medium" onClick={EnterAccount}>
           Войти
         </RegButton>
