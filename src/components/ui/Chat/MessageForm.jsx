@@ -1,7 +1,8 @@
-import styles from "../../../styles/components/ui/Chat/MessageForm.module.css";
-
-// components/ui/Message/Message.jsx
 import React from "react";
+import styles from "../../../styles/components/ui/Chat/MessageForm.module.css";
+import { API_CONFIG } from "../../../services/config/config";
+
+const Base_url = API_CONFIG.BASE_URL;
 
 const Message = ({
   message,

@@ -112,6 +112,13 @@ const MainPage = () => {
       const { authService } = await import("../../services/api/AuthService");
       authService.Logout();
     } catch {}
+
+    //     localStorage.removeItem('userid');
+    // localStorage.removeItem('usersettings');
+    // localStorage.removeItem('token');
+    // localStorage.removeItem('refreshtoken');
+    // localStorage.removeItem('userProfile');
+    // localStorage.removeItem('deviceId');
   };
 
   const handleAddButtonClick = (prev) => {
@@ -186,30 +193,6 @@ const MainPage = () => {
       setSelectedChat(null);
     }
   };
-
-  const chats2 = [
-    {
-      id: 1,
-      img: logo,
-      name: "Kacher Twink",
-      time: "19:49",
-      msgText: "Окей, вчера полная помойка",
-    },
-    {
-      id: 2,
-      img: logo,
-      name: "James Wilson",
-      time: "19:03",
-      msgText: "Тб мне нужно файл E..",
-    },
-    {
-      id: 3,
-      img: logo,
-      name: "Joseph Stalin",
-      time: "18:42",
-      msgText: "Мой танк уже в тёплой пол окно...",
-    },
-  ];
   return (
     <div className={styles["mainPage-container"]} onKeyPress={handleCloseChat}>
       <AnimatePresence>
@@ -260,7 +243,7 @@ const MainPage = () => {
                   .map((chat) => (
                     <ChatUi
                       key={chat.id}
-                      img={chat.img}
+                      img={chat.avatarUrl}
                       name={chat.name}
                       time={chat.time}
                       msgText={chat.lastMessage}
@@ -366,7 +349,6 @@ const MainPage = () => {
                     !prevMessage ||
                     new Date(message.createdAt).toDateString() !==
                       new Date(prevMessage.createdAt).toDateString();
-
                   return (
                     <Message
                       key={message.id}

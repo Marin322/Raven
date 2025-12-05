@@ -101,3 +101,17 @@
 @keyframes l13{ 
   100%{transform: rotate(1turn)}
 }
+
+.settings-window-mainsettings-points {
+  -webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 10px;
+}

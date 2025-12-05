@@ -24,35 +24,42 @@
   background-color: var(--background-color);
   padding: 4px 12px;
   border-radius: 12px;
-  font-size: 12px;
-  color: var(--text-secondary);
+  font-size: 16px;
+  color: var(--text-heading);
   border: 1px solid var(--border-color);
   margin: 0 10px;
 }
 
 .message {
   display: flex;
-  max-width: 70%;
-  margin: 2px 0;
+  flex-direction: column;
   position: relative;
-  height: 50px;
+  margin: 2px 0;
+  width: fit-content;
+  background-color: var(--secondary-body);
+  border: 2px solid var(--scrollbar-border);
+  border-radius: 15px;
+  padding: 5px;
 }
 
 .own {
   margin-left: auto;
-  flex-direction: row-reverse;
+  align-items: flex-end;
 }
 
 .other {
   margin-right: auto;
+  align-items: flex-start;
 }
 
 .senderInfo {
   display: flex;
   align-items: center;
-  height: 10px;
   margin-bottom: 4px;
-  margin-left: 8px;
+  margin-left: 12px;
+  margin-right: 12px;
+  max-width: 600px;
+  min-width: 200px;
 }
 
 .avatar {
@@ -64,14 +71,18 @@
 }
 
 .senderName {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .contentWrapper {
   position: relative;
-  max-width: 100%;
+  max-width: 600px;
+  min-width: 200px;
 }
 
 .messageCorner {
@@ -105,7 +116,9 @@
   position: relative;
   word-wrap: break-word;
   word-break: break-word;
-  min-width: 60px;
+  max-width: 100%;
+  min-width: 100%;
+  box-sizing: border-box;
 }
 
 .other .messageContent {
@@ -129,9 +142,19 @@
 }
 
 .text {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.4;
   white-space: pre-wrap;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  color: var(--text-heading);
+}
+
+/* Ограничение для очень длинных слов */
+.text {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .fileAttachment {
@@ -142,6 +165,8 @@
   border-radius: 8px;
   margin-top: 8px;
   border: 1px solid rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .own .fileAttachment {
@@ -152,11 +177,14 @@
 .fileIcon {
   font-size: 20px;
   margin-right: 10px;
+  flex-shrink: 0;
 }
 
 .fileInfo {
   display: flex;
   flex-direction: column;
+  min-width: 0; /* Для правильной работы text-overflow */
+  flex: 1;
 }
 
 .fileName {
@@ -164,6 +192,9 @@
   font-weight: 500;
   color: var(--primary-color);
   text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .fileName:hover {
@@ -181,11 +212,13 @@
   align-items: center;
   font-style: italic;
   color: var(--text-secondary);
+  max-width: 100%;
 }
 
 .deletedIcon {
   margin-right: 8px;
   opacity: 0.6;
+  flex-shrink: 0;
 }
 
 .messageFooter {
@@ -196,16 +229,21 @@
   padding: 0 2px;
   font-size: 11px;
   color: var(--text-secondary);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .time {
   opacity: 0.7;
+  white-space: nowrap;
+  font-size: 12px;
 }
 
 .statusIcons {
   display: flex;
   align-items: center;
   margin-left: 6px;
+  flex-shrink: 0;
 }
 
 .editedIcon,
@@ -223,6 +261,31 @@
 
 .deliveredIcon {
   color: #2196F3;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .contentWrapper {
+    max-width: 85vw;
+    min-width: 60px;
+  }
+  
+  .senderInfo {
+    max-width: 85vw;
+    min-width: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contentWrapper {
+    max-width: 90vw;
+    min-width: 50px;
+  }
+  
+  .senderInfo {
+    max-width: 90vw;
+    min-width: 50px;
+  }
 }
 
 /* Анимации для новых сообщений */

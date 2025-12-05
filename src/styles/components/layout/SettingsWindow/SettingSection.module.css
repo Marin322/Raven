@@ -1,0 +1,17 @@
+.settingSection-container {
+    width: 100%;
+    height: 40px;
+    color: var(--text-heading);
+    display: flex;
+    justify-content: left;
+    gap: 10px;
+}
+
+
+.settingSection-container div {
+    margin-left: 40px;
+}
+
+.settingSection-container.active {
+    background-color: rgb(143, 143, 143);
+}
