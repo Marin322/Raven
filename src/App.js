@@ -10,15 +10,28 @@ function App() {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark').matches;
     const savedTheme = localStorage.getItem('theme');
 
-    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', initialTheme);
-  })
+    const themeSettingRaw = localStorage.getItem('usersettings');
+    const themeSetting = themeSettingRaw ? JSON.parse(themeSettingRaw) : null;
+
+    if (!themeSetting) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+    else {
+      const initialTheme = themeSetting.theme;
+      document.documentElement.setAttribute('data-theme', initialTheme);
+    }
+    console.log(themeSetting?.theme)
+
+    // || (prefersDark ? 'dark' : 'light')
+  }, [])
+
+
 
   useEffect(() => {
     const userId = localStorage.getItem('userid');
     setIsAuth(!!userId); // true если нет userId, false если есть
   }, []); // ← Пустой массив = выполнить один раз
-//gkufgtuifj
+  //gkufgtuifj
   return (
     <BrowserRouter>
       <Routes>

@@ -211,7 +211,6 @@ const MainPage = () => {
       <div className={styles["chatsList-container"]}>
         <div className={styles["logo-menu"]}>
           <p>
-            <ThemeToggle />
             <b>Raven Chat</b>
           </p>
           <div className={styles["logo-menu-burger"]}>
