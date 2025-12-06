@@ -10,6 +10,14 @@ import {
   ConfidentialitySvgIcon,
   DevicesSvgIcon,
 } from "../../../icons/svg/SettingsSvgIcons";
+import {
+  AccountSetting,
+  AppearanceSetting,
+  ChatsSetting,
+  ConfidentialitySetting,
+  DevicesSetting,
+  NotificationsSetting,
+} from "./SettingsParams";
 
 const SettingsWindow = ({ onClick }) => {
   const [loading, setLoading] = useState(false);
@@ -19,6 +27,47 @@ const SettingsWindow = ({ onClick }) => {
   const setActiveSettingPoint = (id) => {
     setIsActiveId(id);
   };
+
+  const settings = [
+    {
+      id: 1,
+      name: "Учётная запись",
+      icon: <AccountSvgIcon />,
+      component: <AccountSetting />,
+    },
+    {
+      id: 2,
+      name: "Внешний вид",
+      icon: <AppearanceSvgIcon />,
+      component: <AppearanceSetting />,
+    },
+    {
+      id: 3,
+      name: "Уведомления",
+      icon: <NotificationsSvgIcon />,
+      component: <NotificationsSetting />,
+    },
+    {
+      id: 4,
+      name: "Чаты",
+      icon: <ChatsSvgIcon />,
+      component: <ChatsSetting />,
+    },
+    {
+      id: 5,
+      name: "Конфиденциальность",
+      icon: <ConfidentialitySvgIcon />,
+      component: <ConfidentialitySetting />,
+    },
+    {
+      id: 6,
+      name: "Устройства",
+      icon: <DevicesSvgIcon />,
+      component: <DevicesSetting />,
+    },
+  ];
+
+  const activeSetting = settings.find((setting) => setting.id === isActiveId);
 
   const LoadSettings = async () => {
     const { userProfile } = await import("../../../services/api/UserProfile");
@@ -80,45 +129,20 @@ const SettingsWindow = ({ onClick }) => {
               )}
             </div>
             <div className={styles["settings-window-mainsettings-points"]}>
-              <SettingSection
-                isActive={isActiveId === 1}
-                name="Учётная запись"
-                svgIcon={<AccountSvgIcon />}
-                onClick={() => setActiveSettingPoint(1)}
-              />
-              <SettingSection
-                isActive={isActiveId === 2}
-                name="Внешний вид"
-                svgIcon={<AppearanceSvgIcon />}
-                onClick={() => setActiveSettingPoint(2)}
-              />
-              <SettingSection
-                isActive={isActiveId === 3}
-                name="Уведомления"
-                svgIcon={<NotificationsSvgIcon />}
-                onClick={() => setActiveSettingPoint(3)}
-              />
-              <SettingSection
-                isActive={isActiveId === 4}
-                name="Чаты"
-                svgIcon={<ChatsSvgIcon />}
-                onClick={() => setActiveSettingPoint(4)}
-              />
-              <SettingSection
-                isActive={isActiveId === 5}
-                name="Конфиденциальность"
-                svgIcon={<ConfidentialitySvgIcon />}
-                onClick={() => setActiveSettingPoint(5)}
-              />
-              <SettingSection
-                isActive={isActiveId === 6}
-                name="Устройства"
-                svgIcon={<DevicesSvgIcon />}
-                onClick={() => setActiveSettingPoint(6)}
-              />
+              {settings.map((setting) => (
+                <SettingSection
+                  name={setting.name}
+                  onClick={() => setActiveSettingPoint(setting.id)}
+                  svgIcon={setting.icon}
+                  isActive={isActiveId === setting.id}
+                  key={setting.id}
+                />
+              ))}
             </div>
           </div>
-          <div className={styles["settings-window-mainparams"]}></div>
+          <div className={styles["settings-window-mainparams"]}>
+            {activeSetting ? activeSetting.component : <div></div>}
+          </div>
         </div>
       </motion.div>
     </div>

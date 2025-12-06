@@ -5,6 +5,7 @@
     display: flex;
     justify-content: left;
     gap: 10px;
+    align-items: center;
 }
 
 
@@ -13,5 +14,26 @@
 }
 
 .settingSection-container.active {
-    background-color: rgb(143, 143, 143);
+    position: relative;
+}
+
+.settingSection-container.active::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 0;
+    width: 4px;
+    height: 80%;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(2, 43, 255, 0.9) 20%,
+        rgba(2, 43, 255, 1) 50%,
+        rgba(2, 43, 255, 0.9) 80%,
+        transparent 100%
+    );
+    box-shadow: 
+        0 0 10px rgba(2, 43, 255, 0.8),
+        0 0 20px rgba(2, 43, 255, 0.4);
+    border-radius: 0 2px 2px 0;
 }
