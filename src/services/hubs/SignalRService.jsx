@@ -12,7 +12,7 @@ class SignalRService {
             console.log('🔄 Начинаем подключение SignalR...');
             
             this.connection = new signalR.HubConnectionBuilder()
-                .withUrl('http://ravenapp.ru/chatHub', {
+                .withUrl('https://ravenapp.ru/chatHub', {
                     accessTokenFactory: () => token,
                     // Включаем все транспорты
                     skipNegotiation: false,

@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-    BASE_URL: 'http://ravenapp.ru', // базовый url для запроса
+    BASE_URL: 'https://ravenapp.ru', // базовый url для запроса
     AUTHENTICATION: {
         REGISTRATION: '/api/auth/register',
         AUTHORIZATION: '/api/auth/login',
@@ -14,5 +14,8 @@ export const API_CONFIG = {
     },
     PROFILE: {
         GETPROFILE: '/api/users/' // userid
+    },
+    SETTINGS: {
+        CHANGEAPPEARANCESETTINGS: '/api/users/settings/appearance'
     }
 };

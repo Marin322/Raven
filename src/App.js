@@ -3,26 +3,21 @@ import MainPage from './pages/MainPage/MainPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { initializationThemeFun } from './functions/ThemeFun';
 
 function App() {
   const [isAuth, setIsAuth] = useState(null);
   useEffect(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark').matches;
-    const savedTheme = localStorage.getItem('theme');
-
     const themeSettingRaw = localStorage.getItem('usersettings');
     const themeSetting = themeSettingRaw ? JSON.parse(themeSettingRaw) : null;
+    console.log(themeSettingRaw)
 
     if (!themeSetting) {
       document.documentElement.setAttribute('data-theme', 'light');
     }
     else {
-      const initialTheme = themeSetting.theme;
-      document.documentElement.setAttribute('data-theme', initialTheme);
+      initializationThemeFun();
     }
-    console.log(themeSetting?.theme)
-
-    // || (prefersDark ? 'dark' : 'light')
   }, [])
 
 

@@ -10,7 +10,7 @@ export default class MessageService {
             console.log('📤 Отправка сообщения на: http://ravenapp.ru/api/messages/send');
 
             // Создаем URL с query параметром targetUserId
-            let url = 'http://ravenapp.ru/api/messages/send';
+            let url = 'https://ravenapp.ru/api/messages/send';
             
             // Добавляем targetUserId как query параметр, если он есть
             if (targetUserId && targetUserId !== 'undefined' && targetUserId !== 'null') {
@@ -76,9 +76,9 @@ export default class MessageService {
             }
 
             console.log('📨 Запрос сообщений для чата:', chatId);
-            console.log('🔗 URL:', `http://ravenapp.ru/api/messages/${chatId}?page=${page}&pageSize=${pageSize}`);
+            console.log('🔗 URL:', `https://ravenapp.ru/api/messages/${chatId}?page=${page}&pageSize=${pageSize}`);
 
-            const response = await fetch(`http://ravenapp.ru/api/messages/${chatId}?page=${page}&pageSize=${pageSize}`, {
+            const response = await fetch(`https://ravenapp.ru/api/messages/${chatId}?page=${page}&pageSize=${pageSize}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -133,7 +133,7 @@ export default class MessageService {
                 throw new Error('Токен авторизации отсутствует');
             }
 
-            const response = await fetch(`http://ravenapp.ru/api/messages/edit/${messageId}`, {
+            const response = await fetch(`https://ravenapp.ru/api/messages/edit/${messageId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -161,7 +161,7 @@ export default class MessageService {
                 throw new Error('Токен авторизации отсутствует');
             }
 
-            const response = await fetch(`http://ravenapp.ru/api/messages/delete/${messageId}`, {
+            const response = await fetch(`https://ravenapp.ru/api/messages/delete/${messageId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -188,7 +188,7 @@ export default class MessageService {
                 throw new Error('Токен авторизации отсутствует');
             }
 
-            const response = await fetch(`http://ravenapp.ru/api/messages/search/${chatId}?searchTerm=${encodeURIComponent(searchTerm)}&page=${page}&pageSize=${pageSize}`, {
+            const response = await fetch(`https://ravenapp.ru/api/messages/search/${chatId}?searchTerm=${encodeURIComponent(searchTerm)}&page=${page}&pageSize=${pageSize}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -215,7 +215,7 @@ export default class MessageService {
                 throw new Error('Токен авторизации отсутствует');
             }
 
-            let url = 'http://ravenapp.ru/api/messages/unread-count';
+            let url = 'https://ravenapp.ru/api/messages/unread-count';
             if (chatId) {
                 url += `?chatId=${chatId}`;
             }

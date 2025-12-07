@@ -17,6 +17,8 @@
   --add-newchat-button: #444d68;
   --dropdown-list: #1e1e1e;
   --drop-shadow-windows: rgba(255, 255, 255, 0.334);
+  --checkbox-thumb-unactive: #a0b8ff;
+  --checkbox-thumb-active: #191b22;
 }
 
 [data-theme="light"] {
@@ -26,7 +28,7 @@
     --text-heading: #000000;
   --text-hint: #635c50;
   --text-in-button: #ffffff;
-  --button-color: #A0B8FF;
+  --button-color: #8196ff;
   --button-color2: #8196FF;
   --input-field: #f0f0f0;
   --newchat-button: #cecedb;
@@ -38,11 +40,13 @@
   --add-newchat-button: #444d68;
     --dropdown-list: #e9e6e6;
   --drop-shadow-windows: rgba(0, 0, 0, 0.2);
+  --checkbox-thumb-unactive: #8196ff;
+  --checkbox-thumb-active: #e9e9ff;
 }
 
 * {
-  transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
+  transition: background-color 0s ease, color 0s ease,
+    border-color 0s ease;
 }
 
 input,
@@ -51,6 +55,6 @@ textarea,
 .authWindow,
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-thumb {
-  transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
+  transition: background-color 0s ease, color 0s ease,
+    border-color 0s ease;
 }

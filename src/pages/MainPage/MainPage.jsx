@@ -13,6 +13,7 @@ import AddFriendModal from "../../components/layout/AddFrinedModal/AddFriendModa
 import SettingsWindow from "../../components/layout/SettingsWindow/SettingsWindow";
 import CreateLocalChatModal from "../../components/layout/AddNewLocalChatModal/AddNewLocalChatModal";
 import Message from "../../components/ui/Chat/MessageForm";
+import { initializationThemeFun } from "../../functions/ThemeFun";
 
 const MainPage = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false); // состояние открытия настроек
@@ -41,6 +42,10 @@ const MainPage = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    initializationThemeFun();
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

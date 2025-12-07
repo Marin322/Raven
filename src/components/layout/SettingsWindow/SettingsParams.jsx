@@ -9,17 +9,20 @@ export const AccountSetting = () => {
 export const AppearanceSetting = () => {
     const userSettingsStr = localStorage.getItem("usersettings");
     const userSettings = userSettingsStr ? JSON.parse(userSettingsStr) : null;
+    console.log(userSettings.theme)
 
     const saveChanges = async () => {
         const { settingsService } = await import("../../../services/api/SettingsService");
 
-        const result = settingsService.ChangeAppearance("light")
-        console.log(result)
+        const themeSettingStr = localStorage.getItem('usersettings');
+        const themeSetting = themeSettingStr ? JSON.parse(themeSettingStr) : null;
+        const result = settingsService.ChangeAppearance(themeSetting.theme);
+        console.log(result);
     }
     return (
         <div className={styles["settings-container"]}>
             <div>
-                <ThemeToggle/>
+                <ThemeToggle />
                 <button onClick={saveChanges}>Сохранить</button>
             </div>
         </div>
