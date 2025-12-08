@@ -364,6 +364,8 @@ const MainPage = () => {
                       showSender={showSender}
                       isFirstInGroup={isFirstInGroup}
                       isLastInGroup={isLastInGroup}
+                      currentUserId={currentUserId} // Добавьте это
+                      chatId={selectedChat?.id}
                     />
                   );
                 })}

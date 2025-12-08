@@ -86,6 +86,30 @@ class AuthService {
     localStorage.removeItem('userProfile');
     localStorage.removeItem('deviceId');
   }
+
+  async getNewToken() {
+    const token = localStorage.getItem('token');
+    const refreshToken = localStorage.getItem('refreshtoken');
+
+    const userData = {
+      token,
+      refreshToken
+    };
+
+    const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.AUTHENTICATION.REFRESHTOKEN}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    });
+
+    if(!response.ok) throw new Error(response.status);
+
+    const result = await response.json();
+    return result;
+  }
 }
 
 export const authService = new AuthService();

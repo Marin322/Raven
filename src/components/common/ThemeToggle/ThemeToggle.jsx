@@ -35,7 +35,7 @@ const ThemeToggle = () => {
     // <button className="theme-toggle" onClick={toggleTheme}>
     //   {currentTheme === "light" ? "☀️" : "🌙"}
     // </button>
-    <div className={styles["toggler"]}>
+    <div className={styles["toggler"]} onClick={toggleTheme}>
       <input type="checkbox" />
       <div className={styles["check"]}>
         <div></div>
