@@ -34,6 +34,27 @@ class UserProfile {
             throw new Error(error)
         };
     };
+
+    async GetUserDevices() {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.PROFILE.GETUSERDEVICES}`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) throw new Error(response.status);
+
+            const result = await response.json();
+            console.log(result);
+        }
+        catch(error) {
+            console.error(error);
+        };
+    };
 };
 
 export const userProfile = new UserProfile();

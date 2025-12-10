@@ -115,7 +115,7 @@ const MainPage = () => {
 
     try {
       const { authService } = await import("../../services/api/AuthService");
-      authService.Logout();
+      authService.getNewToken();
     } catch {}
 
     //     localStorage.removeItem('userid');

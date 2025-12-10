@@ -63,11 +63,18 @@ const SettingsWindow = ({ onClick }) => {
       id: 6,
       name: "Устройства",
       icon: <DevicesSvgIcon />,
-      component: <DevicesSetting />,
+      component: DevicesSetting,
     },
   ];
 
   const activeSetting = settings.find((setting) => setting.id === isActiveId);
+
+   const renderActiveComponent = () => {
+    if (!activeSetting) return <div></div>;
+    
+    const Component = activeSetting.component;
+    return <Component />;
+  };
 
   const LoadSettings = async () => {
     const { userProfile } = await import("../../../services/api/UserProfile");
@@ -141,7 +148,7 @@ const SettingsWindow = ({ onClick }) => {
             </div>
           </div>
           <div className={styles["settings-window-mainparams"]}>
-            {activeSetting ? activeSetting.component : <div></div>}
+            {renderActiveComponent()}
           </div>
         </div>
       </motion.div>

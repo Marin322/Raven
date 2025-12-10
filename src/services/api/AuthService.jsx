@@ -108,6 +108,9 @@ class AuthService {
     if(!response.ok) throw new Error(response.status);
 
     const result = await response.json();
+    console.log(result)
+    localStorage.setItem('token', result.token);
+    localStorage.setItem('refreshtoken', result.refreshToken);
     return result;
   }
 }

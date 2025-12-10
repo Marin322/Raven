@@ -1,5 +1,6 @@
 import styles from "../../../styles/components/layout/SettingsWindow/SettingsParams.module.css";
 import ThemeToggle from "../../common/ThemeToggle/ThemeToggle";
+import { useState, useEffect } from "react";
 
 
 export const AccountSetting = () => {
@@ -42,5 +43,35 @@ export const ConfidentialitySetting = () => {
 }
 
 export const DevicesSetting = () => {
-    
-}
+  const [devices, setDevices] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const loadDevices = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const { userProfile } = await import('../../../services/api/UserProfile');
+      await userProfile.GetUserDevices(); // Этот метод должен возвращать данные!
+    } catch (error) {
+      setError(error.message);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDevices();
+  }, []); // Загружаем только при монтировании
+
+  if (loading) return <div>Загрузка устройств...</div>;
+  if (error) return <div>Ошибка: {error}</div>;
+
+  return (
+    <div className={styles.devicesContainer}>
+      <h2>Устройства</h2>
+      {/* Рендерим устройства */}
+    </div>
+  );
+};

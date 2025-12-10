@@ -14,7 +14,8 @@ export const API_CONFIG = {
         GETALLUSERS: '/api/users/list/search/user'
     },
     PROFILE: {
-        GETPROFILE: '/api/users/' // userid
+        GETPROFILE: '/api/users/', // userid
+        GETUSERDEVICES: '/api/devices'
     },
     SETTINGS: {
         CHANGEAPPEARANCESETTINGS: '/api/users/settings/appearance'
