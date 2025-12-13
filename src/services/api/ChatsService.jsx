@@ -98,6 +98,6 @@ class ChatsService {
 
     console.log("Чат создан");
   };
-}
+};
 
 export const chatsService = new ChatsService();

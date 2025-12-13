@@ -97,6 +97,7 @@
   height: 100%;
   color: var(--text-heading);
   font-size: 18px;
+  width: 320px;
 }
 
 @media (max-width: 768px) {
