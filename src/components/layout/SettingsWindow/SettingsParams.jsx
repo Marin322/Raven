@@ -2,45 +2,38 @@ import styles from "../../../styles/components/layout/SettingsWindow/SettingsPar
 import ThemeToggle from "../../common/ThemeToggle/ThemeToggle";
 import { useState, useEffect } from "react";
 
-
-export const AccountSetting = () => {
-
-}
+export const AccountSetting = () => {};
 
 export const AppearanceSetting = () => {
-    const userSettingsStr = localStorage.getItem("usersettings");
-    const userSettings = userSettingsStr ? JSON.parse(userSettingsStr) : null;
-    console.log(userSettings.theme)
+  const userSettingsStr = localStorage.getItem("usersettings");
+  const userSettings = userSettingsStr ? JSON.parse(userSettingsStr) : null;
+  console.log(userSettings.theme);
 
-    const saveChanges = async () => {
-        const { settingsService } = await import("../../../services/api/SettingsService");
-
-        const themeSettingStr = localStorage.getItem('usersettings');
-        const themeSetting = themeSettingStr ? JSON.parse(themeSettingStr) : null;
-        const result = settingsService.ChangeAppearance(themeSetting.theme);
-        console.log(result);
-    }
-    return (
-        <div className={styles["settings-container"]}>
-            <div>
-                <ThemeToggle />
-                <button onClick={saveChanges}>Сохранить</button>
-            </div>
-        </div>
+  const saveChanges = async () => {
+    const { settingsService } = await import(
+      "../../../services/api/SettingsService"
     );
+
+    const themeSettingStr = localStorage.getItem("usersettings");
+    const themeSetting = themeSettingStr ? JSON.parse(themeSettingStr) : null;
+    const result = settingsService.ChangeAppearance(themeSetting.theme);
+    console.log(result);
+  };
+  return (
+    <div className={styles["settings-container"]}>
+      <div>
+        <ThemeToggle />
+        <button onClick={saveChanges}>Сохранить</button>
+      </div>
+    </div>
+  );
 };
 
-export const NotificationsSetting = () => {
-    
-}
+export const NotificationsSetting = () => {};
 
-export const ChatsSetting = () => {
-    
-}
+export const ChatsSetting = () => {};
 
-export const ConfidentialitySetting = () => {
-    
-}
+export const ConfidentialitySetting = () => {};
 
 export const DevicesSetting = () => {
   const [devices, setDevices] = useState([]);
@@ -51,8 +44,10 @@ export const DevicesSetting = () => {
     try {
       setLoading(true);
       setError(null);
-      const { userProfile } = await import('../../../services/api/UserProfile');
-      await userProfile.GetUserDevices(); // Этот метод должен возвращать данные!
+      const { userProfile } = await import("../../../services/api/UserProfile");
+      const getDevices = await userProfile.GetUserDevices();
+      console.log(getDevices)
+      setDevices(getDevices); // Этот метод должен возвращать данные!
     } catch (error) {
       setError(error.message);
       console.error(error);
@@ -69,9 +64,17 @@ export const DevicesSetting = () => {
   if (error) return <div>Ошибка: {error}</div>;
 
   return (
-    <div className={styles.devicesContainer}>
+    <div className={styles["devicesParams-container"]}>
       <h2>Устройства</h2>
-      {/* Рендерим устройства */}
+      <div className={styles["devices-container"]}>
+        {devices.map((device) => {
+          return (
+            <div key={device.id}>
+              <p>{device.deviceType}</p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -86,6 +86,7 @@ const SettingsWindow = ({ onClick }) => {
       if (UserProfileStr) {
         try {
           profileData = JSON.parse(UserProfileStr);
+          
         } catch (error) {
           localStorage.removeItem("userProfile");
           console.error(error);

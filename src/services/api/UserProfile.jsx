@@ -71,7 +71,7 @@ class UserProfile {
                 if (!response.ok) throw new Error(response.status);
 
                 const result = await response.json();
-                console.log(result);
+                return result;
             }
             catch (error) {
                 console.error(error);
