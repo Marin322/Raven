@@ -15,7 +15,8 @@ export const API_CONFIG = {
     },
     PROFILE: {
         GETPROFILE: '/api/users/profile/', 
-        GETUSERDEVICES: '/api/devices'
+        GETUSERDEVICES: '/api/devices',
+        REVOKEALLDEVICES: '/api/devices/revoke-all'
     },
     SETTINGS: {
         CHANGEAPPEARANCESETTINGS: '/api/users/settings/appearance'

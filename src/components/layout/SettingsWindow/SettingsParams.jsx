@@ -7,7 +7,6 @@ export const AccountSetting = () => {};
 export const AppearanceSetting = () => {
   const userSettingsStr = localStorage.getItem("usersettings");
   const userSettings = userSettingsStr ? JSON.parse(userSettingsStr) : null;
-  console.log(userSettings.theme);
 
   const saveChanges = async () => {
     const { settingsService } = await import(
@@ -17,7 +16,6 @@ export const AppearanceSetting = () => {
     const themeSettingStr = localStorage.getItem("usersettings");
     const themeSetting = themeSettingStr ? JSON.parse(themeSettingStr) : null;
     const result = settingsService.ChangeAppearance(themeSetting.theme);
-    console.log(result);
   };
   return (
     <div className={styles["settings-container"]}>
@@ -47,7 +45,7 @@ export const DevicesSetting = () => {
       const { userProfile } = await import("../../../services/api/UserProfile");
       const getDevices = await userProfile.GetUserDevices();
       console.log(getDevices)
-      setDevices(getDevices); // Этот метод должен возвращать данные!
+      setDevices(getDevices); 
     } catch (error) {
       setError(error.message);
       console.error(error);
@@ -58,7 +56,13 @@ export const DevicesSetting = () => {
 
   useEffect(() => {
     loadDevices();
-  }, []); // Загружаем только при монтировании
+  }, []); 
+
+  const handleRevokeAllDevices = async () => {
+    const { userProfile } = await import('../../../services/api/UserProfile');
+
+    userProfile.RevokeAllDevices();
+  }
 
   if (loading) return <div>Загрузка устройств...</div>;
   if (error) return <div>Ошибка: {error}</div>;
@@ -81,6 +85,7 @@ export const DevicesSetting = () => {
           );
         })}
       </div>
+      <button onClick={handleRevokeAllDevices}>Выйти со всех устройств</button>
     </div>
   );
 };

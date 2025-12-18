@@ -41,7 +41,13 @@
     width: 150px;
     height: 100%;
     color: var(--text-heading);
-    font-size: 0.9em;
+    font-size: 1.1em;
+}
+
+.device-type {
+    width: 90%;
+    font-size: 1.5em;
+    display: flex;
 }
 
 .device-button button {
@@ -52,9 +58,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.6s ease;
+    transition: background, color 0.6s ease;
 }
 
 .device-button button:hover {
     background-color: red;
+    color: black;
 }
