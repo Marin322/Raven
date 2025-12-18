@@ -15,10 +15,12 @@ const AuthFrame = ({ isAuth, setIsAuth }) => {
 
   const EnterAccount = async () => {
     const { authService } = await import("../../../services/api/AuthService");
+    const deviceid = localStorage.getItem('deviceid');
     try {
       const enterUser = await authService.Authorization({
         email: authEmail,
         password: authPassword,
+        deviceId: deviceid
       });
 
       if (enterUser.status === 200) {

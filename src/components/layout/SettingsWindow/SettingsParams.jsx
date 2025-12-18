@@ -69,8 +69,14 @@ export const DevicesSetting = () => {
       <div className={styles["devices-container"]}>
         {devices.map((device) => {
           return (
-            <div key={device.id}>
-              <p>{device.deviceType}</p>
+            <div key={device.id} className={styles["device-container"]}>
+              <div className={styles["device-icon"]}></div>
+              <div className={styles["device-type"]}>
+                <p>{device.deviceType}</p>
+              </div>
+              <div className={styles["device-button"]}>
+                <button>Выйти с устройства</button>
+              </div>
             </div>
           );
         })}

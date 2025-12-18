@@ -123,7 +123,6 @@ const MainPage = () => {
     // localStorage.removeItem('token');
     // localStorage.removeItem('refreshtoken');
     // localStorage.removeItem('userProfile');
-    // localStorage.removeItem('deviceId');
   };
 
   const handleAddButtonClick = (prev) => {
