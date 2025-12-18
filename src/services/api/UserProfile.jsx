@@ -18,68 +18,88 @@ class UserProfile {
 
             if (!response.ok) throw new Error(response.status);
 
-            let result;
+            const result = await response.json();
 
-            try {
-                result = await response.json();
-                localStorage.setItem("userProfile", JSON.stringify(result));
-                const profile = JSON.parse(localStorage.getItem('userProfile'));
-                const avatarUrl = profile.avatarUrl;
-                const mediaResponse = await fetch(
-                    `${API_CONFIG.BASE_URL}${API_CONFIG.AVATARS.GETCHATAVATAR}?fileUrl=${avatarUrl}`, // Эндпоинт для медиа пользователя
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        }
-                    }
-                );
+            localStorage.setItem("userProfile", JSON.stringify(result));
 
-                if (!mediaResponse.ok) {
-                    console.warn('Не удалось получить медиа пользователя, используем дефолтные значения');
-                    return userProfile;
-                }
-                console.log(mediaResponse.status);
-
-                const mediaData = await mediaResponse.json();
-                console.log(mediaData)
-
-                // 4. Обновляем avatarUrl в профиле
-                if (mediaData.avatarUrl) {
-                    userProfile.avatarUrl = mediaData.avatarUrl;
-                    return result;
-                }
-
-                localStorage.setItem('userProfile', JSON.stringify(this.userProfile));
+            if (result.avatarUrl) {
+                await this.GetUserAvatar(result);
             }
-            catch (error) {
-                throw new Error(error)
-            };
+
+            return result;
         }
-        catch(error) {};
+        catch (error) { };
     };
 
-    async GetUserDevices() {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.PROFILE.GETUSERDEVICES}`, {
+    async GetUserAvatar(profileData = null) {
+        try {
+            let profile = profileData;
+            if (!profile) {
+                const profileStr = localStorage.getItem('userProfile');
+                if (profileStr) {
+                    profile = JSON.parse(profileStr);
+                } else {
+                    console.warn('Профиль не найден в localStorage');
+                    return;
+                }
+            }
+
+            const token = localStorage.getItem('token');
+            const avatarUrl = profile.avatarUrl;
+
+            if (!avatarUrl) {
+                console.warn('Нет avatarUrl в профиле');
+                return profile;
+            }
+
+            const mediaResponse = await fetch(
+                `${API_CONFIG.BASE_URL}${API_CONFIG.AVATARS.GETCHATAVATAR}?fileUrl=${encodeURIComponent(avatarUrl)}`,
+                {
                     method: 'GET',
                     headers: {
-                        Accept: 'application/json',
-                        Authorization: `Bearer ${token}`
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     }
-                });
+                }
+            );
 
-                if (!response.ok) throw new Error(response.status);
-
-                const result = await response.json();
-                return result;
+            if (!mediaResponse.ok) {
+                console.warn('Не удалось получить аватар, используем исходный URL');
+                return profile;
             }
-            catch (error) {
-                console.error(error);
-            };
+
+            const mediaData = await mediaResponse.json();
+
+            // Обновляем avatarUrl
+            if (mediaData.avatarUrl) {
+                profile.avatarUrl = mediaData.avatarUrl;
+                localStorage.setItem('userProfile', JSON.stringify(profile));
+            }
+            return profile;
+        }
+        catch { }
+    }
+
+    async GetUserDevices() {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.PROFILE.GETUSERDEVICES}`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) throw new Error(response.status);
+
+            const result = await response.json();
+            return result;
+        }
+        catch (error) {
+            console.error(error);
         };
     };
+};
 
-    export const userProfile = new UserProfile();
+export const userProfile = new UserProfile();

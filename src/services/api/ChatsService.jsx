@@ -54,11 +54,11 @@ class ChatsService {
 
           const validationErrors = result.errors
             ? Object.entries(result.errors)
-                .map(
-                  ([field, msgs]) =>
-                    `${field}: ${Array.isArray(msgs) ? msgs.join(", ") : msgs}`
-                )
-                .join("; ")
+              .map(
+                ([field, msgs]) =>
+                  `${field}: ${Array.isArray(msgs) ? msgs.join(", ") : msgs}`
+              )
+              .join("; ")
             : result.title || "Валидация не прошла";
           throw new Error(`Bad Request (валидация): ${validationErrors}`);
         }
@@ -77,7 +77,7 @@ class ChatsService {
   }
 
   async CreateGroupChat() {
-    
+
   }
 
   async CreatePersonalChat(targetUserId) {
