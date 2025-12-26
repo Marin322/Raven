@@ -1,4 +1,5 @@
 // services/api/MessagesService.js
+import { API_CONFIG } from "../config/config";
 export default class MessageService {
     async sendMessage(content, targetUserId, chatId, file = null) {
         try {
@@ -67,277 +68,349 @@ export default class MessageService {
         }
     }
 
-    // Получение сообщений чата - ВАЖНЫЙ МЕТОД!
-    async getMessages(chatId, page = 1, pageSize = 50) {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Токен авторизации отсутствует');
-            }
-
-            console.log('📨 Запрос сообщений для чата:', chatId);
-            console.log('🔗 URL:', `https://ravenapp.ru/api/messages/${chatId}?page=${page}&pageSize=${pageSize}`);
-
-            const response = await fetch(`https://ravenapp.ru/api/messages/${chatId}?page=${page}&pageSize=${pageSize}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            console.log('📨 Ответ сервера:', response.status, response.statusText);
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('❌ Ошибка HTTP:', errorText);
-                
-                // Если 404, возможно чат не существует или нет сообщений
-                if (response.status === 404) {
-                    return [];
-                }
-                
-                throw new Error(`Ошибка ${response.status}: ${errorText}`);
-            }
-
-            const result = await response.json();
-            console.log('✅ Получены сообщения:', result);
-            
-            // Исходя из вашего контроллера, Result<T> возвращает Data
-            if (result && result.isSuccess !== undefined) {
-                // Если структура Result<T>
-                return result.data || [];
-            } else if (result && result.data !== undefined) {
-                // Если структура { data: [...] }
-                return result.data || [];
-            } else if (Array.isArray(result)) {
-                // Если просто массив
-                return result;
-            }
-            
-            console.warn('⚠️ Неизвестная структура ответа:', result);
-            return [];
-            
-        } catch (error) {
-            console.error('❌ Ошибка получения сообщений:', error);
-            // Вместо выбрасывания ошибки возвращаем пустой массив
-            return [];
-        }
-    }
-
-    // Редактирование сообщения
-    async editMessage(messageId, content) {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Токен авторизации отсутствует');
-            }
-
-            const response = await fetch(`https://ravenapp.ru/api/messages/edit/${messageId}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ content })
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            console.error('❌ Ошибка редактирования сообщения:', error);
-            throw error;
-        }
-    }
-
-    // Удаление сообщения
-    async deleteMessage(messageId) {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Токен авторизации отсутствует');
-            }
-
-            const response = await fetch(`https://ravenapp.ru/api/messages/delete/${messageId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            console.error('❌ Ошибка удаления сообщения:', error);
-            throw error;
-        }
-    }
-
-    // Поиск сообщений
-    async searchMessages(chatId, searchTerm, page = 1, pageSize = 25) {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Токен авторизации отсутствует');
-            }
-
-            const response = await fetch(`https://ravenapp.ru/api/messages/search/${chatId}?searchTerm=${encodeURIComponent(searchTerm)}&page=${page}&pageSize=${pageSize}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            console.error('❌ Ошибка поиска сообщений:', error);
-            throw error;
-        }
-    }
-
-    // Получение количества непрочитанных сообщений
-    async getUnreadCount(chatId = null) {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Токен авторизации отсутствует');
-            }
-
-            let url = 'https://ravenapp.ru/api/messages/unread-count';
-            if (chatId) {
-                url += `?chatId=${chatId}`;
-            }
-
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            console.error('❌ Ошибка получения непрочитанных:', error);
-            throw error;
-        }
-    }
-
-    // services/api/MessagesService.js - добавьте эти методы
-
-// Отметить сообщение как прочитанное
-async markAsRead(messageId) {
+  // Получение сообщений чата - ВАЖНЫЙ МЕТОД!
+  async getMessages(chatId, page = 1, pageSize = 50) {
     try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('Токен авторизации отсутствует');
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Токен авторизации отсутствует");
+      }
+
+      console.log("📨 Запрос сообщений для чата:", chatId);
+      console.log(
+        "🔗 URL:",
+        `https://ravenapp.ru/api/messages/${chatId}?page=${page}&pageSize=${pageSize}`
+      );
+
+      const response = await fetch(
+        `https://ravenapp.ru/api/messages/${chatId}?page=${page}&pageSize=${pageSize}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("📨 Ответ сервера:", response.status, response.statusText);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ Ошибка HTTP:", errorText);
+
+        // Если 404, возможно чат не существует или нет сообщений
+        if (response.status === 404) {
+          return [];
         }
 
-        console.log('📖 Отмечаем сообщение как прочитанное:', messageId);
+        throw new Error(`Ошибка ${response.status}: ${errorText}`);
+      }
 
-        const response = await fetch(`https://ravenapp.ru/api/messages/read/${messageId}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
-        });
+      const result = await response.json();
+      console.log("✅ Получены сообщения:", result);
 
-        console.log('📨 Ответ сервера (markAsRead):', response.status, response.statusText);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('❌ Ошибка отметки сообщения как прочитанного:', error);
-        throw error;
-    }
-}
-
-// Отметить все сообщения в чате как прочитанные
-async markAllAsRead(chatId) {
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('Токен авторизации отсутствует');
-        }
-
-        console.log('📖 Отмечаем все сообщения как прочитанные в чате:', chatId);
-
-        const response = await fetch(`https://ravenapp.ru/api/messages/mark-all-read/${chatId}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
-        });
-
-        console.log('📨 Ответ сервера (markAllAsRead):', response.status, response.statusText);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('❌ Ошибка отметки всех сообщений:', error);
-        throw error;
-    }
-}
-
-// Получить количество непрочитанных сообщений
-async getUnreadCount(chatId = null) {
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('Токен авторизации отсутствует');
-        }
-
-        let url = 'https://ravenapp.ru/api/messages/unread-count';
-        if (chatId) {
-            url += `?chatId=${chatId}`;
-        }
-
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
-        });
-
-        console.log('📨 Ответ сервера (unread-count):', response.status, response.statusText);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('📊 Непрочитанных сообщений:', result);
+      // Исходя из вашего контроллера, Result<T> возвращает Data
+      if (result && result.isSuccess !== undefined) {
+        // Если структура Result<T>
+        return result.data || [];
+      } else if (result && result.data !== undefined) {
+        // Если структура { data: [...] }
+        return result.data || [];
+      } else if (Array.isArray(result)) {
+        // Если просто массив
         return result;
+      }
+
+      console.warn("⚠️ Неизвестная структура ответа:", result);
+      return [];
     } catch (error) {
-        console.error('❌ Ошибка получения непрочитанных:', error);
-        throw error;
+      console.error("❌ Ошибка получения сообщений:", error);
+      // Вместо выбрасывания ошибки возвращаем пустой массив
+      return [];
     }
-}
+  }
+
+  // Редактирование сообщения
+  async editMessage(messageId, content) {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Токен авторизации отсутствует");
+      }
+
+      const response = await fetch(
+        `https://ravenapp.ru/api/messages/edit/${messageId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ content }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("❌ Ошибка редактирования сообщения:", error);
+      throw error;
+    }
+  }
+
+  // Удаление сообщения
+  async deleteMessage(messageId) {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Токен авторизации отсутствует");
+      }
+
+      const response = await fetch(
+        `https://ravenapp.ru/api/messages/delete/${messageId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("❌ Ошибка удаления сообщения:", error);
+      throw error;
+    }
+  }
+
+  // Поиск сообщений
+  async searchMessages(chatId, searchTerm, page = 1, pageSize = 25) {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Токен авторизации отсутствует");
+      }
+
+      const response = await fetch(
+        `https://ravenapp.ru/api/messages/search/${chatId}?searchTerm=${encodeURIComponent(
+          searchTerm
+        )}&page=${page}&pageSize=${pageSize}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("❌ Ошибка поиска сообщений:", error);
+      throw error;
+    }
+  }
+
+  // Получение количества непрочитанных сообщений
+//   async getUnreadCount(chatId = null) {
+//     try {
+//       const token = localStorage.getItem("token");
+//       if (!token) {
+//         throw new Error("Токен авторизации отсутствует");
+//       }
+
+//       let url = "https://ravenapp.ru/api/messages/unread-count";
+//       if (chatId) {
+//         url += `?chatId=${chatId}`;
+//       }
+
+//       const response = await fetch(url, {
+//         method: "GET",
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           "Content-Type": "application/json",
+//         },
+//       });
+
+//       if (!response.ok) {
+//         throw new Error(`HTTP error ${response.status}`);
+//       }
+
+//       return await response.json();
+//     } catch (error) {
+//       console.error("❌ Ошибка получения непрочитанных:", error);
+//       throw error;
+//     }
+//   }
+
+  // services/api/MessagesService.js - добавьте эти методы
+
+  // Отметить сообщение как прочитанное
+  async markAsRead(messageId) {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Токен авторизации отсутствует");
+      }
+
+      console.log("📖 Отмечаем сообщение как прочитанное:", messageId);
+
+      const response = await fetch(
+        `https://ravenapp.ru/api/messages/read/${messageId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(
+        "📨 Ответ сервера (markAsRead):",
+        response.status,
+        response.statusText
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("❌ Ошибка отметки сообщения как прочитанного:", error);
+      throw error;
+    }
+  }
+
+  // Отметить все сообщения в чате как прочитанные
+  async markAllAsRead(chatId) {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Токен авторизации отсутствует");
+      }
+
+      console.log("📖 Отмечаем все сообщения как прочитанные в чате:", chatId);
+
+      const response = await fetch(
+        `https://ravenapp.ru/api/messages/mark-all-read/${chatId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(
+        "📨 Ответ сервера (markAllAsRead):",
+        response.status,
+        response.statusText
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("❌ Ошибка отметки всех сообщений:", error);
+      throw error;
+    }
+  }
+
+  // Получить количество непрочитанных сообщений
+  async getUnreadCount(chatId = null) {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Токен авторизации отсутствует");
+      }
+
+      let url = "https://ravenapp.ru/api/messages/unread-count";
+      if (chatId) {
+        url += `?chatId=${chatId}`;
+      }
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(
+        "📨 Ответ сервера (unread-count):",
+        response.status,
+        response.statusText
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("📊 Непрочитанных сообщений:", result);
+      return result;
+    } catch (error) {
+      console.error("❌ Ошибка получения непрочитанных:", error);
+      throw error;
+    }
+  }
+  async getMessagesWithPagination(chatId, page = 1, pageSize = 25) {
+    try {
+      console.log(`📥 Загрузка сообщений чата ${chatId}, стр. ${page}`);
+
+      // Просто используем ваш уже работающий метод getMessages
+      const messages = await this.getMessages(chatId, page, pageSize);
+      
+      console.log(`✅ Загружено ${messages.length} сообщений`);
+
+      // Преобразуем сообщения к единому формату
+      return messages
+        .map((msg, index) => {
+          // Нормализация данных
+          const messageData = msg.message || msg;
+          
+          return {
+            id: messageData.id || messageData.messageId || `msg_${Date.now()}_${index}`,
+            content: messageData.content || messageData.text || "",
+            senderId: messageData.senderId || messageData.userId || messageData.authorId || "unknown",
+            senderName: messageData.senderName || messageData.userName || "Пользователь",
+            senderAvatar: messageData.senderAvatar || messageData.avatar || null,
+            createdAt: messageData.createdAt || messageData.timestamp || messageData.sentAt || new Date().toISOString(),
+            isEdited: messageData.isEdited || false,
+            isDeleted: messageData.isDeleted || false,
+            isRead: messageData.isRead || false,
+            isDelivered: messageData.isDelivered || false,
+            readCount: messageData.readCount || 0,
+            // Дополнительные поля для сортировки
+            sortDate: new Date(messageData.createdAt || messageData.timestamp || messageData.sentAt || Date.now()),
+          };
+        })
+        .sort((a, b) => a.sortDate - b.sortDate); // Старые -> новые
+    } catch (error) {
+      console.error("❌ Ошибка загрузки сообщений:", error);
+      return [];
+    }
+  }
+
 }
 
 export const messageService = new MessageService();

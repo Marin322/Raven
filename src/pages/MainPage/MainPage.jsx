@@ -1,6 +1,6 @@
 import styles from "./MainPage.module.css";
 import BurgerMenuBtn from "../../components/common/Buttons/BurgerMenu/BurgerMenu";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSignalR } from "../../hooks/useSignalR";
 import SearchField from "../../components/common/SearchField/SearchField";
 import ChatUi from "../../components/ui/Chat/ChatUi";
@@ -29,16 +29,62 @@ const MainPage = () => {
   const [pageNum, setPageNumb] = useState(1); // состояние для страниц на пагинацию
   const [filteredChats, setFilteredChats] = useState([]); // массив отфильтрованных чатов
   const [localChatIsOpen, setLocalChatIsOpen] = useState(false);
+  
 
+
+
+  const {
+    isConnected,
+    messages,
+    typingUsers,
+    startTyping,
+    stopTyping,
+    loadingMessages,
+    loadingMore,
+    hasMoreMessages,
+    messagesContainerRef,
+    sendMessage,
+    loadMoreMessages,
+  } = useSignalR(selectedChat?.id);
+
+  const currentUserId = localStorage.getItem("userid");
   const [inputMessage, setInputMessage] = useState("");
   const messagesEndRef = useRef(null);
 
-  const { isConnected, messages, typingUsers, startTyping, stopTyping } =
-    useSignalR(selectedChat?.id);
+  // Прокрутка к последнему сообщению при получении нового
+  // useEffect(() => {
+  //   if (messages.length > 0) {
+  //     // Проверяем, было ли добавлено новое сообщение (последнее по времени)
+  //     const lastMessage = messages[messages.length - 1];
+  //     const isNewMessage = 
+  //       lastMessage.senderId === currentUserId && 
+  //       Date.now() - new Date(lastMessage.createdAt).getTime() < 5000;
+      
+  //     if (isNewMessage) {
+  //       scrollToBottom();
+  //     }
+  //   }
+  // }, [messages, currentUserId]);
 
-  const currentUserId = localStorage.getItem("userid");
+  // Ручная прокрутка к последнему сообщению
+  const scrollToBottomManual = () => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  };
 
-  // Прокрутка к последнему сообщению
+  // Обработчик скролла
+  const handleMessagesScroll = useCallback((e) => {
+    const container = e.target;
+    
+    const isNearBottom = 
+      container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+    
+    if (isNearBottom) {
+    } else {
+    }
+  }, []);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -316,7 +362,7 @@ const MainPage = () => {
 
             {/* Сообщения */}
             <div className={styles["chat-main"]}>
-              <div className={styles["messages-container"]}>
+              <div className={styles["messages-container"]} onScroll={handleMessagesScroll} ref={messagesContainerRef}>
                 {messages.map((message, index) => {
                   const isOwn = message.senderId === currentUserId;
                   const prevMessage = messages[index - 1];
@@ -354,7 +400,7 @@ const MainPage = () => {
                       new Date(prevMessage.createdAt).toDateString();
                   return (
                     <Message
-                      key={message.id}
+                      key={`${message.id}_${index}`}
                       message={{
                         ...message,
                         showDateSeparator,

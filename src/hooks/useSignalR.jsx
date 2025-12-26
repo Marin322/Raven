@@ -7,82 +7,115 @@ export const useSignalR = (chatId) => {
   const [messages, setMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState(new Set());
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 25; // Количество сообщений на странице
+  const messagesContainerRef = useRef(null);
 
-  // Функция для загрузки сообщений из API
-  const loadMessages = useCallback(async (chatId) => {
-    if (!chatId) return;
+  const loadMessages = useCallback(async (page = 1, append = false) => {
+    if (!chatId) {
+      console.log("⚠️ Не указан chatId");
+      return;
+    }
 
     try {
-      setLoadingMessages(true);
-
-      // Пробуем разные методы загрузки сообщений
-      let fetchedMessages = [];
-
-      try {
-        const { messageService } = await import(
-          "../services/api/MessagesService"
-        );
-        fetchedMessages = await messageService.getMessages(chatId);
-        console.log(
-          "✅ Сообщения загружены через getMessages:",
-          fetchedMessages.length
-        );
-      } catch (error1) {
-        console.warn("⚠️ Первый метод не сработал:", error1.message);
-
-        try {
-          const { messageService } = await import(
-            "../services/api/MessagesService"
-          );
-          fetchedMessages = await messageService.getChatMessages(chatId);
-          console.log(
-            "✅ Сообщения загружены через getChatMessages:",
-            fetchedMessages.length
-          );
-        } catch (error2) {
-          console.warn("⚠️ Второй метод не сработал:", error2.message);
-
-          try {
-            const { messageService } = await import(
-              "../services/api/MessagesService"
-            );
-            fetchedMessages = await messageService.getMessageHistory(chatId);
-            console.log(
-              "✅ Сообщения загружены через getMessageHistory:",
-              fetchedMessages.length
-            );
-          } catch (error3) {
-            console.warn("⚠️ Все методы не сработали:", error3.message);
-            fetchedMessages = []; // Возвращаем пустой массив
-          }
-        }
+      if (append) {
+        setLoadingMore(true);
+      } else {
+        setLoadingMessages(true);
       }
 
+      console.log(`🔄 Загрузка сообщений, страница ${page}`);
+
+      // Используем ваш уже работающий метод getMessages
+      const { messageService } = await import(
+        "../services/api/MessagesService"
+      );
+
+      const fetchedMessages = await messageService.getMessages(chatId, page, pageSize);
+      
+      console.log(`✅ Получено ${fetchedMessages.length} сообщений`);
+
       // Нормализуем сообщения
-      const normalizedMessages = (fetchedMessages || []).map((msg) => ({
-        id: msg.id || Math.random().toString(),
+      const normalizedMessages = fetchedMessages.map((msg, index) => ({
+        id: msg.id || `msg_${Date.now()}_${index}`,
         content: msg.content || msg.text || "",
-        senderId: msg.senderId || msg.userId || msg.authorId,
+        senderId: msg.senderId || msg.userId || "unknown",
         senderName: msg.senderName || msg.userName || "Пользователь",
-        senderAvatar: msg.senderAvatar || msg.avatar,
+        senderAvatar: msg.senderAvatar || null,
         createdAt: msg.createdAt || msg.timestamp || new Date().toISOString(),
         isEdited: msg.isEdited || false,
         isDeleted: msg.isDeleted || false,
         isRead: msg.isRead || false,
         isDelivered: msg.isDelivered || false,
-        file: msg.file || null,
         readCount: msg.readCount || 0,
       }));
 
-      console.log("📊 Нормализовано сообщений:", normalizedMessages.length);
-      setMessages(normalizedMessages);
+      if (append) {
+        // Добавляем старые сообщения в начало
+        setMessages(prev => [...normalizedMessages, ...prev]);
+      } else {
+        // Первая загрузка
+        setMessages(normalizedMessages);
+      }
+
+      // Проверяем, есть ли еще сообщения
+      setHasMoreMessages(normalizedMessages.length === pageSize);
+      setCurrentPage(page);
+
     } catch (error) {
       console.error("❌ Ошибка загрузки сообщений:", error);
-      setMessages([]);
+      if (!append) {
+        setMessages([]);
+      }
     } finally {
       setLoadingMessages(false);
+      setLoadingMore(false);
     }
-  }, []);
+  }, [chatId, pageSize]);
+
+  const loadMoreMessages = useCallback(async () => {
+    if (!hasMoreMessages || loadingMore) return;
+
+    const nextPage = currentPage + 1;
+    console.log(`🔄 Загрузка старых сообщений, страница ${nextPage}`);
+    
+    // Сохраняем текущую позицию скролла
+    const container = messagesContainerRef.current;
+    const oldScrollHeight = container ? container.scrollHeight : 0;
+    const oldScrollTop = container ? container.scrollTop : 0;
+
+    // Загружаем следующую страницу
+    await loadMessages(nextPage, true);
+
+    // Восстанавливаем позицию скролла после загрузки
+    if (container) {
+      const newScrollHeight = container.scrollHeight;
+      container.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight);
+    }
+  }, [hasMoreMessages, loadingMore, currentPage, loadMessages]);
+
+  const handleScroll = useCallback(() => {
+    const container = messagesContainerRef.current;
+    if (!container || loadingMore || !hasMoreMessages || !chatId) return;
+
+    // Порог для загрузки (150px от верха)
+    const scrollThreshold = 150;
+    
+    if (container.scrollTop <= scrollThreshold) {
+      loadMoreMessages();
+    }
+  }, [loadingMore, hasMoreMessages, loadMoreMessages, chatId]);
+
+  // Эффект для добавления обработчика скролла
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, [handleScroll]);
 
   useEffect(() => {
     const initConnection = async () => {
@@ -113,7 +146,9 @@ export const useSignalR = (chatId) => {
   useEffect(() => {
     if (chatId) {
       console.log("🔄 Загрузка сообщений для чата:", chatId);
-      loadMessages(chatId);
+      setCurrentPage(1);
+      setHasMoreMessages(true);
+      loadMessages(1, false);
     } else {
       setMessages([]);
     }
@@ -293,8 +328,12 @@ export const useSignalR = (chatId) => {
     setMessages,
     typingUsers,
     loadingMessages,
+    loadingMore,
+    hasMoreMessages,
+    messagesContainerRef,
     startTyping,
     stopTyping,
     sendMessage,
+    loadMoreMessages,
   };
 };
