@@ -14,6 +14,7 @@ import SettingsWindow from "../../components/layout/SettingsWindow/SettingsWindo
 import CreateLocalChatModal from "../../components/layout/AddNewLocalChatModal/AddNewLocalChatModal";
 import Message from "../../components/ui/Chat/MessageForm";
 import { initializationThemeFun } from "../../functions/ThemeFun";
+import ChatSideBar from "../../components/layout/ChatSideBar/ChatSideBar";
 
 const MainPage = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false); // состояние открытия настроек
@@ -29,9 +30,8 @@ const MainPage = () => {
   const [pageNum, setPageNumb] = useState(1); // состояние для страниц на пагинацию
   const [filteredChats, setFilteredChats] = useState([]); // массив отфильтрованных чатов
   const [localChatIsOpen, setLocalChatIsOpen] = useState(false);
-  
-
-
+  const [chatInfo, setChatInfo] = useState(false);
+  const [userStatus, setUserStatus] = useState();
 
   const {
     isConnected,
@@ -148,7 +148,7 @@ const MainPage = () => {
     setIsSettingsOpen(false);
   };
 
-  const handleChatClick = (chat) => {
+  const handleChatClick = async (chat) => {
     setSelectedChat(chat);
   };
 
@@ -243,6 +243,11 @@ const MainPage = () => {
       setSelectedChat(null);
     }
   };
+
+  const handleOpenChatInfo = () => {
+    setChatInfo((prev) => !prev);
+  };
+  
   return (
     <div className={styles["mainPage-container"]} onKeyPress={handleCloseChat}>
       <AnimatePresence>
@@ -357,11 +362,17 @@ const MainPage = () => {
                 avatar={selectedChat.avatar || selectedChat.img}
                 name={selectedChat.name}
                 isOnline={selectedChat.isOnline}
+                onClick={handleOpenChatInfo}
               />
             </div>
 
             {/* Сообщения */}
             <div className={styles["chat-main"]}>
+            {chatInfo && (
+              <div className={styles["chatSidebar-container"]}>
+                <ChatSideBar chatId={selectedChat.id}/>
+              </div>
+            )}
               <div className={styles["messages-container"]} onScroll={handleMessagesScroll} ref={messagesContainerRef}>
                 {messages.map((message, index) => {
                   const isOwn = message.senderId === currentUserId;

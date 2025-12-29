@@ -8,15 +8,19 @@ export const API_CONFIG = {
     },
     CHATS: {
         GETUSERCHATS: '/api/chats',
-        CREATEPERSONALCHAT: '/api/chats/personal/' //targetUserId
+        CREATEPERSONALCHAT: '/api/chats/personal/', //targetUserId
+        GETCURRENTCHAT: '/api/chats/', //chatid
+        CREATEGROUPCHAT: '/api/chats/group'
     },
     USERS: {
-        GETALLUSERS: '/api/users/list/search/user'
+        GETALLUSERS: '/api/users/list/search/user',
+        GETUSERSTATUS: '/api/activity/status/' //targetuserid
     },
     PROFILE: {
         GETPROFILE: '/api/users/profile/', 
         GETUSERDEVICES: '/api/devices',
-        REVOKEALLDEVICES: '/api/devices/revoke-all'
+        REVOKEALLDEVICES: '/api/devices/revoke-all',
+        REVOKEDEVICE: '/api/devices/revoke'
     },
     SETTINGS: {
         CHANGEAPPEARANCESETTINGS: '/api/users/settings/appearance'

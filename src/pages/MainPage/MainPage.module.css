@@ -169,6 +169,7 @@
   flex-direction: column;
   min-height: 0; /* Важно! Позволяет скроллить */
   overflow: hidden;
+  position: relative;
 }
 
 .messages-container {
@@ -373,4 +374,32 @@
   100% {
     transform: scaleY(-1) rotate(-135deg);
   }
+}
+
+.chatSidebar-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400px; /* или нужная вам ширина */
+  height: 100%;
+  background-color: var(--secondary-body); /* Используйте ваши цвета */
+  border-left: 1px solid var(--scrollbar-border);
+  z-index: 100; /* Чтобы был поверх сообщений */
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  transition: transform 0.3s ease; /* Для анимации */
+}
+
+.chatSidebar-container.hidden {
+  transform: translateX(100%);
+}
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
 }

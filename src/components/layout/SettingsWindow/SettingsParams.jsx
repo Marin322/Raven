@@ -64,6 +64,15 @@ export const DevicesSetting = () => {
     userProfile.RevokeAllDevices();
   }
 
+  const handleRevokeOneDevice = async (deviceId) => {
+    const { userProfile } = await import('../../../services/api/UserProfile');
+
+    try {
+      userProfile.RevokeCurrentDevice(deviceId);
+    }
+    catch(error) {};
+  };
+
   if (loading) return <div>Загрузка устройств...</div>;
   if (error) return <div>Ошибка: {error}</div>;
 
@@ -79,7 +88,7 @@ export const DevicesSetting = () => {
                 <p>{device.deviceType}</p>
               </div>
               <div className={styles["device-button"]}>
-                <button>Выйти с устройства</button>
+              <button onClick={() => handleRevokeOneDevice(device.id)}>Выйти с устройства</button>
               </div>
             </div>
           );

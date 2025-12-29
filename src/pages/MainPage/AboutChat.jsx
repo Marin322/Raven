@@ -1,6 +1,6 @@
 import styles from "./AboutChat.module.css";
 
-const AboutChat = ({ avatar, name, isOnline }) => {
+const AboutChat = ({ avatar, name, isOnline, onClick }) => {
   return (
     <div className={styles["aboutchat-container"]}>
       <div className={styles["aboutchat-user-container"]}>
@@ -22,7 +22,7 @@ const AboutChat = ({ avatar, name, isOnline }) => {
       </div>
       </div>
      <div className={styles["aboutchat-sidebar-btn"]}>
-        <button>···</button>
+        <button onClick={onClick}>···</button>
      </div>
     </div>
   );

@@ -123,6 +123,26 @@ class UserProfile {
 
         }
     }
+
+    async RevokeCurrentDevice(deviceId) {
+        try {
+            const token = localStorage.getItem('token');
+            const currentDeviceId = localStorage.getItem('deviceid');
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.PROFILE.REVOKEDEVICE}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ deviceId: deviceId })
+            });
+    
+            if (!response.ok) throw new Error(response.status);
+    
+            return await response.json();
+        }
+        catch(error) {};
+      }
 };
 
 export const userProfile = new UserProfile();

@@ -27,8 +27,8 @@ class ChatsService {
         localStorage.removeItem("token");
         localStorage.removeItem("refreshtoken");
         localStorage.removeItem("userProfile");
-        return;
-      }
+      throw new Error("Сессия истекла. Пожалуйста, авторизуйтесь заново.");
+    }
 
       let result;
       try {
@@ -47,9 +47,11 @@ class ChatsService {
         );
 
         if (response.status === 401) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("userid");
-          localStorage.removeItem("usersettings");
+            localStorage.removeItem("userid");
+            localStorage.removeItem("usersettings");
+            localStorage.removeItem("token");
+            localStorage.removeItem("refreshtoken");
+            localStorage.removeItem("userProfile");
           throw new Error("Сессия истекла. Пожалуйста, авторизуйтесь заново.");
         }
 
@@ -85,7 +87,25 @@ class ChatsService {
     }
   }
 
-  async CreateGroupChat() {}
+  async CreateGroupChat(requestData) {
+    try {
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.CHATS.CREATEGROUPCHAT}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      if (!response.ok) throw new Error(response.status);
+
+      return await response.json();
+    }
+    catch (error) { };
+  };
 
   async CreatePersonalChat(targetUserId) {
     const token = localStorage.getItem("token");
@@ -108,6 +128,25 @@ class ChatsService {
 
     console.log("Чат создан");
   }
+
+  async GetChatInfo(chatId) {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.CHATS.GETCURRENTCHAT}${chatId}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(!response.ok) throw new Error(response.status);
+
+      const result = await response.json();
+
+      return result;
+    }
+    catch(error) {}
+  };
 }
 
 export const chatsService = new ChatsService();

@@ -13,6 +13,43 @@ const CreateNewChatModal = ({ onClick }) => {
   const [isCreate, setIsCreate] = useState(false);
   const [isPrivacy, setIsPrivacy] = useState(true);
   const [userName, setUserName] = useState("");
+  const [addUsers, setAddUsers] = useState([]);
+
+  const addUser = (userId) => {
+    setAddUsers(prevUsers => {
+      if (prevUsers.includes(userId)) {
+        return prevUsers.filter(id => id !== userId);
+      } else {
+        return [...prevUsers, userId];
+      }
+    });
+  };
+
+  const isUserSelected = (userId) => {
+    return addUsers.includes(userId);
+  };
+
+  const handleCreateGroupChat = async () => {
+    const { chatsService } = await import('../../../services/api/ChatsService');
+  
+    try {
+      const result = await chatsService.CreateGroupChat({
+        Name: name, 
+        Description: desc,
+        Type: 1, 
+        MemberIds: addUsers, 
+        IsPublic: !isPrivacy 
+      });
+      
+      console.log("Чат создан:", result);
+      
+      onClick();
+    }
+    catch(error) {
+      console.error("Ошибка при создании чата:", error);
+      alert("Ошибка при создании чата: " + error.message);
+    }
+  }
 
   const handleChangeName = (e) => {
     setName(e.target.value);
@@ -176,12 +213,18 @@ const CreateNewChatModal = ({ onClick }) => {
                 {users.map((user) => (
                   <div
                     className={styles["add-newchat-window-next-addedusers"]}
-                    key={user.id} >
+                    key={user.id} onClick={() => addUser(user.id)}>
                       <img alt="" src={user.avatarUrl}/>
                       <p>{user.username}</p>
+                      {isUserSelected(user.id) && (
+                      <div className={styles["user-selected-indicator"]}>
+                        ✓
+                      </div>
+                    )}
                     </div>
                 ))}
               </div>
+              <button onClick={handleCreateGroupChat}>Создать чат</button>
             </div>
           </div>
         )}
