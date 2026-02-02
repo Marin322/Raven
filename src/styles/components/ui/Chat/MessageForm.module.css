@@ -303,3 +303,87 @@
 .message {
   animation: messageAppear 0.2s ease-out;
 }
+
+.fileAttachment {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-color-light);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  max-width: 400px;
+  margin: 4px 0;
+}
+
+.own .fileAttachment {
+  background: var(--primary-color-light);
+  border-color: var(--primary-color-light);
+}
+
+.fileAttachment:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fileIcon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.fileInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.fileName {
+  font-weight: 500;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.fileName:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.own .fileName {
+  color: var(--text-color);
+}
+
+.fileSize {
+  font-size: 12px;
+  color: var(--text-color-secondary);
+}
+
+.downloadBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+  flex-shrink: 0;
+}
+
+.own .downloadBtn {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.downloadBtn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}

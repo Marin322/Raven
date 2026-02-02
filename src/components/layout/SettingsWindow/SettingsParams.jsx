@@ -20,8 +20,18 @@ export const AppearanceSetting = () => {
   return (
     <div className={styles["settings-container"]}>
       <div>
-        <ThemeToggle />
-        <button onClick={saveChanges}>Сохранить</button>
+        <div className={styles["settings-theme-container"]}>
+          <div className="text-left text-base mr-20 flex flex-col gap-4">
+            <p className={styles["setting-theme-header"]}>Тема</p>
+            <p>Смена темы оформления</p>
+          </div>
+          <div className="h-full flex content-center">
+            <ThemeToggle />
+          </div>
+        </div>
+        <button onClick={saveChanges} className="">
+          Сохранить
+        </button>
       </div>
     </div>
   );
@@ -44,8 +54,8 @@ export const DevicesSetting = () => {
       setError(null);
       const { userProfile } = await import("../../../services/api/UserProfile");
       const getDevices = await userProfile.GetUserDevices();
-      console.log(getDevices)
-      setDevices(getDevices); 
+      console.log(getDevices);
+      setDevices(getDevices);
     } catch (error) {
       setError(error.message);
       console.error(error);
@@ -56,21 +66,20 @@ export const DevicesSetting = () => {
 
   useEffect(() => {
     loadDevices();
-  }, []); 
+  }, []);
 
   const handleRevokeAllDevices = async () => {
-    const { userProfile } = await import('../../../services/api/UserProfile');
+    const { userProfile } = await import("../../../services/api/UserProfile");
 
     userProfile.RevokeAllDevices();
-  }
+  };
 
   const handleRevokeOneDevice = async (deviceId) => {
-    const { userProfile } = await import('../../../services/api/UserProfile');
+    const { userProfile } = await import("../../../services/api/UserProfile");
 
     try {
       userProfile.RevokeCurrentDevice(deviceId);
-    }
-    catch(error) {};
+    } catch (error) {}
   };
 
   if (loading) return <div>Загрузка устройств...</div>;
@@ -88,7 +97,9 @@ export const DevicesSetting = () => {
                 <p>{device.deviceType}</p>
               </div>
               <div className={styles["device-button"]}>
-              <button onClick={() => handleRevokeOneDevice(device.id)}>Выйти с устройства</button>
+                <button onClick={() => handleRevokeOneDevice(device.id)}>
+                  Выйти с устройства
+                </button>
               </div>
             </div>
           );

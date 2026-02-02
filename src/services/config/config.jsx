@@ -27,5 +27,10 @@ export const API_CONFIG = {
     },
     AVATARS: {
         GETCHATAVATAR: '/api/files/presigned-url'
-    }
+    },
+    FILES: {
+        UPLOAD: "/api/files/upload",
+        DOWNLOAD: "/api/files/download",
+        PRESIGNED_URL: "/api/files/presigned-url"
+      },
 };

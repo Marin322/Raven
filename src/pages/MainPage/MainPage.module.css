@@ -403,3 +403,255 @@
   gap: 4px;
   width: 100%;
 }
+
+.attach-file-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  color: var(--text-color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.attach-file-btn:hover {
+  background: var(--bg-color-hover);
+  color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.attach-file-btn:active {
+  transform: translateY(0);
+}
+
+.chat-input input[type="text"] {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.chat-input input[type="text"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
+}
+
+.send-btn {
+  padding: 10px 20px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: var(--primary-color-dark);
+  transform: translateY(-1px);
+}
+
+.send-btn:disabled {
+  background: var(--bg-color-disabled);
+  color: var(--text-color-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.send-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Индикатор загрузки файлов */
+.uploading-files {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  max-width: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.uploading-files-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.uploading-files-header span {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.close-uploads-btn {
+  background: none;
+  border: none;
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-uploads-btn:hover {
+  background: var(--bg-color-hover);
+  color: var(--text-color);
+}
+
+.uploading-file {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  transition: background 0.2s ease;
+}
+
+.uploading-file:hover {
+  background: var(--bg-color-hover);
+}
+
+.uploading-file:last-child {
+  margin-bottom: 0;
+}
+
+.file-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  color: var(--text-color);
+  max-width: 220px;
+}
+
+.file-status {
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 12px;
+}
+
+/* Статусы загрузки */
+.status-uploading .file-status {
+  color: var(--primary-color);
+}
+
+.status-success .file-status {
+  color: #4CAF50;
+}
+
+.status-error .file-status {
+  color: #f44336;
+}
+
+.status-uploading {
+  background: rgba(var(--primary-color-rgb), 0.05);
+}
+
+.status-success {
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.status-error {
+  background: rgba(244, 67, 54, 0.05);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .chat-input {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  
+  .attach-file-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+  
+  .chat-input input[type="text"] {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+  
+  .send-btn {
+    padding: 8px 16px;
+    min-width: 80px;
+    font-size: 13px;
+  }
+  
+  .uploading-files {
+    right: 10px;
+    left: 10px;
+    max-width: calc(100% - 20px);
+  }
+  
+  .file-name {
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-input {
+    padding: 8px 10px;
+  }
+  
+  .chat-input input[type="text"] {
+    padding: 8px 12px;
+  }
+  
+  .send-btn {
+    padding: 8px 14px;
+    min-width: 70px;
+  }
+  
+  .uploading-files {
+    bottom: 70px;
+  }
+  
+  .file-name {
+    max-width: 140px;
+  }
+}

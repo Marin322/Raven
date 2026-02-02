@@ -65,3 +65,15 @@
     background-color: red;
     color: black;
 }
+
+.settings-theme-container {
+    border-bottom: 2px solid var(--component-border);
+    display: flex;
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.setting-theme-header {
+    font-size: 24px
+}

@@ -128,7 +128,7 @@ const CreateLocalChatModal = ({ onClick, onSelectUser }) => {
                   key={user.id}
                   onClick={() => toggleUser(user)} // ← Выбор по клику
                 >
-                  <img alt="" src={user.avatarUrl} />
+                  <img alt="" src={user.avatarUrl} className="w-8 h-8 rounded-3xl mr-2" />
                   <p>{user.firstName}</p>
                   {selectedUser?.id === user.id && (
                     <span style={{ marginLeft: "8px", color: "#4CAF50" }}>

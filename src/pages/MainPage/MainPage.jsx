@@ -15,6 +15,7 @@ import CreateLocalChatModal from "../../components/layout/AddNewLocalChatModal/A
 import Message from "../../components/ui/Chat/MessageForm";
 import { initializationThemeFun } from "../../functions/ThemeFun";
 import ChatSideBar from "../../components/layout/ChatSideBar/ChatSideBar";
+import { fileService } from "../../services/api/FileService";
 
 const MainPage = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false); // состояние открытия настроек
@@ -32,6 +33,8 @@ const MainPage = () => {
   const [localChatIsOpen, setLocalChatIsOpen] = useState(false);
   const [chatInfo, setChatInfo] = useState(false);
   const [userStatus, setUserStatus] = useState();
+  const fileInputRef = useRef(null);
+  const [uploadingFiles, setUploadingFiles] = useState([]);
 
   const {
     isConnected,
@@ -51,15 +54,121 @@ const MainPage = () => {
   const [inputMessage, setInputMessage] = useState("");
   const messagesEndRef = useRef(null);
 
+  const handleFileSelect = async (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+  
+    if (!selectedChat) {
+      alert('Сначала выберите чат');
+      return;
+    }
+  
+    // Фильтруем файлы
+    const validFiles = files.filter(file => {
+      if (file.size > fileService.getMaxFileSize()) {
+        alert(`Файл "${file.name}" слишком большой. Максимальный размер: ${fileService.formatFileSize(fileService.getMaxFileSize())}`);
+        return false;
+      }
+      if (!fileService.isFileTypeAllowed(file)) {
+        alert(`Файл "${file.name}" имеет неподдерживаемый формат`);
+        return false;
+      }
+      return true;
+    });
+  
+    if (validFiles.length === 0) return;
+
+    
+  
+    for (const file of validFiles) {
+      try {
+        setUploadingFiles(prev => [...prev, { 
+          id: Date.now() + Math.random(), 
+          name: file.name, 
+          status: 'uploading' 
+        }]);
+  
+        console.log(`📤 Загрузка файла: ${file.name}`);
+        
+        // 1. Загружаем файл на сервер
+        const uploadResult = await fileService.uploadFile(file, selectedChat.id);
+        console.log('✅ Файл загружен:', uploadResult);
+  
+        // 2. Подготавливаем данные для сообщения
+        const { messageService } = await import("../../services/api/MessagesService");
+        
+        // ВАЖНО: Создаем объект attachment
+        const attachment = {
+          fileName: uploadResult.fileName || file.name,
+          fileUrl: uploadResult.fileUrl || uploadResult.data?.fileUrl,
+          fileSize: uploadResult.fileSize || file.size,
+          contentType: uploadResult.contentType || file.type,
+          // Добавляем тип для удобства
+          fileType: file.type
+        };
+  
+        console.log('📎 Attachment данные:', attachment);
+  
+        // 3. Отправляем сообщение С attachment
+        const messageResult = await messageService.sendMessage(
+          `${fileService.getFileIcon(file.name)} ${file.name}`, // Текст сообщения
+          selectedChat.interlocutorId,
+          selectedChat.id,
+          attachment // Передаем attachment объект
+        );
+  
+        console.log('✅ Сообщение с файлом отправлено:', messageResult);
+  
+        // 4. Обновляем статус загрузки
+        setUploadingFiles(prev => prev.map(f => 
+          f.name === file.name ? { ...f, status: 'success' } : f
+        ));
+  
+        setTimeout(() => {
+          setUploadingFiles(prev => prev.filter(f => f.name !== file.name));
+        }, 3000);
+  
+      } catch (error) {
+        console.error(`❌ Ошибка загрузки файла ${file.name}:`, error);
+        
+        setUploadingFiles(prev => prev.map(f => 
+          f.name === file.name ? { ...f, status: 'error' } : f
+        ));
+  
+        alert(`Не удалось отправить файл "${file.name}": ${error.message}`);
+      }
+    }
+  
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Функция для перетаскивания файлов
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      handleFileSelect({ target: { files } });
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   // Прокрутка к последнему сообщению при получении нового
   // useEffect(() => {
   //   if (messages.length > 0) {
   //     // Проверяем, было ли добавлено новое сообщение (последнее по времени)
   //     const lastMessage = messages[messages.length - 1];
-  //     const isNewMessage = 
-  //       lastMessage.senderId === currentUserId && 
+  //     const isNewMessage =
+  //       lastMessage.senderId === currentUserId &&
   //       Date.now() - new Date(lastMessage.createdAt).getTime() < 5000;
-      
+
   //     if (isNewMessage) {
   //       scrollToBottom();
   //     }
@@ -69,17 +178,19 @@ const MainPage = () => {
   // Ручная прокрутка к последнему сообщению
   const scrollToBottomManual = () => {
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
     }
   };
 
   // Обработчик скролла
   const handleMessagesScroll = useCallback((e) => {
     const container = e.target;
-    
-    const isNearBottom = 
-      container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-    
+
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight <
+      100;
+
     if (isNearBottom) {
     } else {
     }
@@ -247,7 +358,7 @@ const MainPage = () => {
   const handleOpenChatInfo = () => {
     setChatInfo((prev) => !prev);
   };
-  
+
   return (
     <div className={styles["mainPage-container"]} onKeyPress={handleCloseChat}>
       <AnimatePresence>
@@ -368,12 +479,16 @@ const MainPage = () => {
 
             {/* Сообщения */}
             <div className={styles["chat-main"]}>
-            {chatInfo && (
-              <div className={styles["chatSidebar-container"]}>
-                <ChatSideBar chatId={selectedChat.id}/>
-              </div>
-            )}
-              <div className={styles["messages-container"]} onScroll={handleMessagesScroll} ref={messagesContainerRef}>
+              {chatInfo && (
+                <div className={styles["chatSidebar-container"]}>
+                  <ChatSideBar chatId={selectedChat.id} />
+                </div>
+              )}
+              <div
+                className={styles["messages-container"]}
+                onScroll={handleMessagesScroll}
+                ref={messagesContainerRef}
+              >
                 {messages.map((message, index) => {
                   const isOwn = message.senderId === currentUserId;
                   const prevMessage = messages[index - 1];
@@ -430,7 +545,32 @@ const MainPage = () => {
             </div>
 
             {/* Поле ввода */}
-            <div className={styles["chat-input"]}>
+            <div
+              className={styles["chat-input"]}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+            >
+              {/* Кнопка прикрепления файла */}
+              <button
+                type="button"
+                className={styles["attach-file-btn"]}
+                onClick={() => fileInputRef.current?.click()}
+                title="Прикрепить файл"
+              >
+                📎
+              </button>
+
+              {/* Скрытый input для выбора файлов */}
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                style={{ display: "none" }}
+                multiple
+                accept="image/*,.pdf,.doc,.docx,.txt,.zip,.rar,.7z,.mp4,.mp3,.wav,.ogg,.xls,.xlsx,.ppt,.pptx"
+              />
+
+              {/* Поле ввода текста */}
               <input
                 type="text"
                 placeholder="Напишите сообщение..."
@@ -439,13 +579,48 @@ const MainPage = () => {
                 onKeyPress={handleKeyPress}
                 onBlur={stopTyping}
               />
+
+              {/* Кнопка отправки */}
               <button
+                type="button"
                 onClick={handleSendMessage}
                 disabled={!inputMessage.trim()}
+                className={styles["send-btn"]}
               >
                 Отправить
               </button>
             </div>
+
+            {/* Индикатор загрузки файлов */}
+            {uploadingFiles.length > 0 && (
+              <div className={styles["uploading-files"]}>
+                <div className={styles["uploading-files-header"]}>
+                  <span>Загрузка файлов:</span>
+                  <button
+                    onClick={() => setUploadingFiles([])}
+                    className={styles["close-uploads-btn"]}
+                    title="Скрыть"
+                  >
+                    ✕
+                  </button>
+                </div>
+                {uploadingFiles.map((file) => (
+                  <div
+                    key={file.id}
+                    className={`${styles["uploading-file"]} ${
+                      styles[`status-${file.status}`]
+                    }`}
+                  >
+                    <span className={styles["file-name"]}>{file.name}</span>
+                    <span className={styles["file-status"]}>
+                      {file.status === "uploading" && "🔄 Загрузка..."}
+                      {file.status === "success" && "✅ Успешно"}
+                      {file.status === "error" && "❌ Ошибка"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ) : (
           <div className={styles["no-chat-selected"]}></div>

@@ -68,6 +68,8 @@ export default class MessageService {
         }
     }
 
+    
+
   // Получение сообщений чата - ВАЖНЫЙ МЕТОД!
   async getMessages(chatId, page = 1, pageSize = 50) {
     try {

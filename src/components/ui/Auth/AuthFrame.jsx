@@ -20,7 +20,6 @@ const AuthFrame = ({ isAuth, setIsAuth }) => {
       const enterUser = await authService.Authorization({
         email: authEmail,
         password: authPassword,
-        deviceId: deviceid
       });
 
       if (enterUser.status === 200) {
